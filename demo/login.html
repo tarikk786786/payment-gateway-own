@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gateway | Login Demo</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="../auth/auth-custom.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style> body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; } </style>
+</head>
+
+<body>
+    <div class="premium-auth-container">
+        <!-- Left Animated Panel -->
+        <div class="premium-auth-left">
+            <div class="auth-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+            </div>
+            <div class="premium-auth-left-content">
+                <h1>Welcome to<br>Advanced Payments</h1>
+                <p>Experience seamless, secure, and instant settlements with our enterprise-grade infrastructure.</p>
+                <ul class="feature-list">
+                    <li><i class="ri-shield-check-fill"></i> Bank-Grade Security & PCI-DSS</li>
+                    <li><i class="ri-flashlight-fill"></i> Instant Settlements 24/7</li>
+                    <li><i class="ri-bar-chart-box-fill"></i> Real-time Analytics & Dashboard</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Form Panel -->
+        <div class="premium-auth-right">
+            <div class="auth-form-wrapper">
+                <h2 style="color: var(--auth-primary); margin-bottom: 2rem;">Gateway</h2>
+                <h2>Sign in to your account</h2>
+                <p>Welcome back! Please enter your details to view the demo.</p>
+                
+                <form id="formAuthentication">
+                    <div class="floating-group">
+                        <input type="text" class="floating-input" id="mobileNumber" placeholder=" " maxlength="10" required>
+                        <label class="floating-label" for="mobileNumber">Mobile Number (Any 10 digits)</label>
+                    </div>
+
+                    <div class="floating-group">
+                        <input type="password" class="floating-input" id="password" placeholder=" " required>
+                        <label class="floating-label" for="password">Password (Any)</label>
+                        <span class="password-toggle" id="togglePassword">
+                            <i class="ri-eye-off-line"></i>
+                        </span>
+                    </div>
+
+                    <div class="auth-links">
+                        <label style="display:flex; align-items:center; cursor:pointer; color: var(--auth-text-muted);">
+                            <input type="checkbox" required style="margin-right: 8px;"> Accept Terms
+                        </label>
+                        <a href="#">Forgot password?</a>
+                    </div>
+
+                    <button class="auth-btn" type="submit" id="loginBtn">Sign in (Demo)</button>
+                </form>
+
+                <p class="text-center mt-4" style="color: var(--auth-text-muted);">
+                    Don't have an account? <a href="register.html" style="color: var(--auth-primary); font-weight: 600;">Sign up</a>
+                </p>
+
+                <div class="security-badges">
+                    <div class="badge-item"><i class="ri-lock-2-fill"></i> 256-bit Encryption</div>
+                    <div class="badge-item"><i class="ri-shield-check-line"></i> PCI DSS Compliant</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password Toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.replace('ri-eye-off-line', 'ri-eye-line');
+            } else {
+                password.type = 'password';
+                icon.classList.replace('ri-eye-line', 'ri-eye-off-line');
+            }
+        });
+
+        // Mock Login
+        document.getElementById('formAuthentication').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            btn.innerHTML = 'Authenticating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                Swal.fire({
+                    title: 'Login Successful!',
+                    text: 'Welcome to the DEZOPAY Dashboard Demo.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = 'dashboard.html';
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

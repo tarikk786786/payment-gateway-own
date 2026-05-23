@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEZOPAY | Secure Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../auth-custom.css">
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .checkout-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--surface-light);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 10;
+        }
+
+        .checkout-header {
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+
+        .merchant-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .merchant-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .checkout-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .checkout-body {
+            padding: 2rem;
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-color);
+            background: rgba(56, 189, 248, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .method-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .method-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            width: 30px;
+            text-align: center;
+        }
+
+        .method-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .payment-footer {
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Qr Overlay */
+        .qr-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--surface-light);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .qr-overlay.active {
+            display: flex;
+            animation: slideInBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .qr-box {
+            width: 250px;
+            height: 250px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+        }
+
+        .qr-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .scanning-text {
+            color: var(--primary-color);
+            font-weight: 500;
+            animation: pulse 2s infinite;
+        }
+
+        .loader-ring {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            margin-top: 20px;
+        }
+        .loader-ring:after {
+            content: " ";
+            display: block;
+            width: 32px;
+            height: 32px;
+            margin: 4px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            border-color: var(--primary-color) transparent var(--primary-color) transparent;
+            animation: loader-ring 1.2s linear infinite;
+        }
+        @keyframes loader-ring {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="checkout-container slide-in-bottom">
+        <div class="checkout-header">
+            <div class="merchant-logo">M</div>
+            <div class="merchant-name">Test Merchant Inc.</div>
+            <div class="checkout-amount">₹1,500.00</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">Order #ord_K92jSd82nd</div>
+        </div>
+
+        <div class="checkout-body">
+            <h3 style="margin-bottom: 1.5rem; font-weight: 500;">Select Payment Method</h3>
+            
+            <div class="payment-method" onclick="showUPI()">
+                <div class="method-info">
+                    <i class="fas fa-qrcode method-icon"></i>
+                    <div class="method-name">UPI QR Code</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+            </div>
+
+            <div class="payment-method" onclick="simulateSuccess()">
+                <div class="method-info">
+                    <i class="far fa-credit-card method-icon"></i>
+                    <div class="method-name">Credit / Debit Card</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+            </div>
+
+            <div class="payment-method" onclick="simulateSuccess()">
+                <div class="method-info">
+                    <i class="fas fa-university method-icon"></i>
+                    <div class="method-name">NetBanking</div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+            </div>
+        </div>
+
+        <div class="payment-footer">
+            <i class="fas fa-lock"></i> Secured by <strong>DEZOPAY</strong>
+        </div>
+
+        <!-- QR Overlay Simulator -->
+        <div class="qr-overlay" id="qrOverlay">
+            <div style="width: 100%; text-align: left; margin-bottom: 1rem;">
+                <button onclick="hideUPI()" style="background:none; border:none; color:var(--text-light); font-size:1.2rem; cursor:pointer;"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            
+            <h2 style="margin-bottom: 5px;">Scan to Pay</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Scan with PhonePe, GPay, or Paytm</p>
+            
+            <div class="qr-box">
+                <!-- Using a dummy QR image for demo -->
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=test@upi&pn=Test&am=1500" alt="UPI QR">
+            </div>
+
+            <div class="scanning-text mt-4">Waiting for payment confirmation...</div>
+            <div class="loader-ring"></div>
+        </div>
+    </div>
+
+    <script>
+        function showUPI() {
+            document.getElementById('qrOverlay').classList.add('active');
+            
+            // Automatically redirect to success after 5 seconds of scanning
+            setTimeout(() => {
+                window.location.href = 'success.html';
+            }, 4000);
+        }
+
+        function hideUPI() {
+            document.getElementById('qrOverlay').classList.remove('active');
+        }
+
+        function simulateSuccess() {
+            window.location.href = 'success.html';
+        }
+    </script>
+</body>
+</html>

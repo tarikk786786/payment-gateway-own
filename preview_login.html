@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+<title>Gateway | Login Preview</title>
+<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="auth/auth-custom.css">
+<style>
+    /* Adding some base styles since we stripped the overall dashboard css */
+    body { margin: 0; padding: 0; }
+</style>
+</head>
+
+<body>
+    <div class="premium-auth-container">
+        
+        <!-- Left Animated Panel -->
+        <div class="premium-auth-left">
+            <div class="auth-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+            </div>
+            <div class="premium-auth-left-content">
+                <h1>Welcome to<br>Advanced Payments</h1>
+                <p>Experience seamless, secure, and instant settlements with our enterprise-grade infrastructure.</p>
+                
+                <ul class="feature-list">
+                    <li><i class="ri-shield-check-fill"></i> Bank-Grade Security & PCI-DSS</li>
+                    <li><i class="ri-flashlight-fill"></i> Instant Settlements 24/7</li>
+                    <li><i class="ri-bar-chart-box-fill"></i> Real-time Analytics & Dashboard</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Form Panel -->
+        <div class="premium-auth-right">
+            <div class="auth-form-wrapper">
+                <h2 style="color: var(--auth-primary); margin-bottom: 2rem;">Gateway</h2>
+                
+                <h2>Sign in to your account</h2>
+                <p>Welcome back! Please enter your details.</p>
+                
+                <form id="formAuthentication" action="#" method="POST">
+                    
+                    <div class="floating-group">
+                        <input type="text" class="floating-input" id="mobileNumber" name="username" 
+                               placeholder=" " maxlength="10" pattern="\d{10}" required>
+                        <label class="floating-label" for="mobileNumber">Mobile Number</label>
+                    </div>
+
+                    <div class="floating-group">
+                        <input type="password" class="floating-input" id="password" name="password" 
+                               placeholder=" " required>
+                        <label class="floating-label" for="password">Password</label>
+                        <span class="password-toggle" id="togglePassword">
+                            <i class="ri-eye-off-line"></i>
+                        </span>
+                    </div>
+
+                    <div class="auth-links">
+                        <label style="display:flex; align-items:center; cursor:pointer; color: var(--auth-text-muted);">
+                            <input type="checkbox" id="remember-me" required style="margin-right: 8px;">
+                            Accept Terms
+                        </label>
+                        <a href="#">Forgot password?</a>
+                    </div>
+
+                    <button class="auth-btn" type="button" id="loginBtn" name="submit">Sign in</button>
+                    
+                </form>
+
+                <div class="social-login-divider">or continue with</div>
+                
+                <a href="#" class="social-btn">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                    Sign in with Google
+                </a>
+
+                <p class="text-center mt-4" style="color: var(--auth-text-muted);">
+                    Don't have an account? <a href="#" style="color: var(--auth-primary); text-decoration: none; font-weight: 600;">Sign up</a>
+                </p>
+
+                <div class="security-badges">
+                    <div class="badge-item"><i class="ri-lock-2-fill"></i> 256-bit Encryption</div>
+                    <div class="badge-item"><i class="ri-shield-check-line"></i> PCI DSS Compliant</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Password Toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.replace('ri-eye-off-line', 'ri-eye-line');
+            } else {
+                password.type = 'password';
+                icon.classList.replace('ri-eye-line', 'ri-eye-off-line');
+            }
+        });
+    </script>
+</body>
+</html>

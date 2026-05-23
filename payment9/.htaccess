@@ -1,0 +1,15 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# RewriteRule for the payment link
+RewriteRule ^instant-pay/([a-zA-Z0-9]+)$ pay_now.php?token=$1 [L,QSA]
+RewriteRule ^verify/([a-zA-Z0-9]+)$ verify.php?token=$1 [L,QSA]
+
+
+# Manual banking links
+RewriteRule ^ui/([a-zA-Z0-9]+)$ uifile.php?token=$1 [L,QSA]
+RewriteRule ^ui/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([a-zA-Z0-9]+)/([0-9]+)$ uifile.php?token=$1&order_id=$2&status=$3&user_id=$4 [L,QSA]
+
+
+
+
