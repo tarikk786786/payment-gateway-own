@@ -412,8 +412,6 @@ echo '
 }
 }
 }
-}
-}
 ?>
 <body>
     <div class="premium-auth-container">
