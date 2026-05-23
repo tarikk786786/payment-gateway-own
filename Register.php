@@ -115,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="auth/auth-custom.css">
 <script disable-devtool-auto="" src="https://cdn.jsdelivr.net/npm/disable-devtool@0.3.8/disable-devtool.min.js" data-url="https://www.google.com/"></script>
 <!--<script src="https://<?=$server?>/dev-script.js"></script>-->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </head>
 
 
@@ -152,18 +152,10 @@ if (isset($_POST['create'])) {
     
     
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $secretKey = "6Le_GvAqAAAAAIMsH2dKjYWbSbFOQXKyJ0luafeQ";
-    $responseKey = $_POST['g-recaptcha-response'];
-    $userIP = $_SERVER['REMOTE_ADDR'];
-
-    // Google reCAPTCHA API Request
-    $verifyURL = "https://www.google.com/recaptcha/api/siteverify?secret={$secretKey}&response={$responseKey}&remoteip={$userIP}";
-
-    $response = file_get_contents($verifyURL);
-    $responseData = json_decode($response);
-
-    if ($responseData->success) {
+        // reCAPTCHA removed
+        
         // यहाँ पर आपका फॉर्म प्रोसेसिंग कोड
+
     
 $use_referral = isset($_POST['use_referral']) ? true : false;
 $referred_by = $_POST['referral_code'];
@@ -207,27 +199,20 @@ exit;
 // Proceed with user registration
 $password = $_POST['password'];
 $name = $_POST['name'];
-$company = $_POST['company'];
-$pin = $_POST['pin'];
-$pan = $_POST['pan'];
-$aadhaar = $_POST['aadhaar'];
+$company = isset($_POST['company']) ? $_POST['company'] : '';
+$pin = isset($_POST['pin']) ? $_POST['pin'] : '';
+$pan = isset($_POST['pan']) ? $_POST['pan'] : '';
+$aadhaar = isset($_POST['aadhaar']) ? $_POST['aadhaar'] : '';
+$location = isset($_POST['location']) ? $_POST['location'] : '';
 
-
-
-$checkpan = "SELECT * FROM `users` WHERE `pan` = '$pan'";
-$checkpanResult = mysqli_query($conn, $checkpan);
-
-$checkaadhar = "SELECT * FROM `users` WHERE `aadhaar` = '$aadhaar'";
-$checkAadharResult = mysqli_query($conn, $checkaadhar);
-
-if (mysqli_num_rows($checkpanResult) > 0) {
-echo "<script>alert('Oops! Sorry, PAN Number Already Exists. Please use a different PAN number.');</script>";
-exit;
-} elseif (mysqli_num_rows($checkAadharResult) > 0) {
-// The email already exists, display an error message
-echo "<script>alert('Oops! Sorry, Aadhaar Number Already Exists. Please use a different Aadhaar Number.');</script>";
-exit;
-}else{  
+// Check if Mobile or Email already exists
+if (mysqli_num_rows($checkMobileResult) > 0) {
+    echo "<script>alert('Oops! Sorry, Mobile Number Already Exists. Please use a different number.');</script>";
+    exit;
+} elseif (mysqli_num_rows($checkEmailResult) > 0) {
+    echo "<script>alert('Oops! Sorry, Email Already Exists. Please use a different Email.');</script>";
+    exit;
+} else {  
  // Function to generate a random instance_id
 function generateRandomInstanceId($length = 16) {
   $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -251,7 +236,7 @@ function generateRandomInstanceId($length = 16) {
 if ($use_referral && $valid_referral) {
 // Generate random instance_id and instance_secret
 $instanceId = generateRandomInstanceId();
-$location = $_POST['location'];
+$instanceId = generateRandomInstanceId();
 $key = md5(rand(00000000, 99999999));
 $pass = password_hash($password, PASSWORD_BCRYPT);
 $today = date("Y-m-d", strtotime("+1 days"));
@@ -425,15 +410,8 @@ echo '
 }
 }
 }
-}else {
-    echo '<script>
-    alert("reCAPTCHA Failed!\nPlease try again.");
-    setTimeout(() => {
-        history.back();
-    }, 2000);
-</script>';
-exit;
-    }
+}
+}
 }
 }
 ?>
@@ -474,65 +452,20 @@ exit;
                     <div class="form-floating form-floating-outline mb-5">
                         <input type="number" class="form-control" id="Number" name="mobile" placeholder="Enter your Number" 
                                pattern="[0-9]{10}" title="Enter exactly 10 digits" 
-                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required autofocus onkeyup="checkInitialFields(); validateMobile()">
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required autofocus onkeyup="validateMobile()">
                         <label for="Number">Mobile Number</label>
                         <div id="mobile-warning" class="text-danger mt-1"></div>
                     </div>
 
                     <div class="form-floating form-floating-outline mb-5">
                         <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" 
-                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Enter a valid email address" required onkeyup="checkInitialFields(); validateEmail()">
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Enter a valid email address" required onkeyup="validateEmail()">
                         <label for="email">Email Id</label>
                         <div id="email-warning" class="text-danger mt-1"></div>
                     </div>
-
-                    <div class="form-floating form-floating-outline mb-5" id="otpDiv" style="display: none;">
-                        <input type="number" class="form-control" id="otp" name="otp" placeholder="Enter OTP" 
-                               oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" required onkeyup="validateOTP()">
-                        <label for="otp">OTP</label>
-                        <div id="otp-warning" class="text-danger mt-1"></div>
-                        <button type="button" class="btn btn-primary mt-2" onclick="verifyOTP()">Verify OTP</button>
-                        <button type="button" class="btn btn-secondary mt-2" id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
-                        <div id="resend-message" class="mt-2" style="font-size: 12px;"></div>
-                        <div class="mt-2" style="font-size: 12px;">OTP sent to Email. If not received, please check your spam folder.</div>
-                    </div>
                     
-                    <div id="hiddenFields" style="display: none;">
+                    <div id="hiddenFields">
                         
-                        <div class="form-floating form-floating-outline mb-5">
-                            <input type="text" class="form-control" id="company" name="company" placeholder="Enter your Company Name" required>
-                            <label for="company">Company Name</label>
-                        </div>
-                        
-                        <div class="form-floating form-floating-outline mb-5">
-                            <input type="number" class="form-control" id="aadhar" name="aadhaar" placeholder="Enter your Aadhaar Number" 
-                                   pattern="[0-9]{12}" title="Enter exactly 12 digits" 
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12);" required onkeyup="validateAadhaar()">
-                            <label for="aadhar">Aadhaar Number</label>
-                            <div id="aadhaar-warning" class="text-danger mt-1"></div>
-                        </div>
-                        
-                        <div class="form-floating form-floating-outline mb-5">
-                            <input type="text" class="form-control" id="pan" name="pan" placeholder="Enter your Pan Number" 
-                                   pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Enter valid PAN (e.g., ABCDE1234F)" 
-                                   maxlength="10" oninput="this.value = this.value.toUpperCase();" required onkeyup="validatePAN()">
-                            <label for="pan">Pan Number</label>
-                            <div id="pan-warning" class="text-danger mt-1"></div>
-                        </div>
-                        
-                        <div class="form-floating form-floating-outline mb-5">
-                            <input type="text" class="form-control" id="location" name="location" placeholder="Enter your Location" required autofocus>
-                            <label for="location">Location</label>
-                        </div>
-                        
-                        <div class="form-floating form-floating-outline mb-5">
-                            <input type="number" class="form-control" id="pin" name="pin" placeholder="Enter your Pincode" 
-                                   pattern="[0-9]{6}" title="Enter exactly 6 digits" 
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" required autofocus onkeyup="validatePin()">
-                            <label for="pin">Pincode</label>
-                            <div id="pin-warning" class="text-danger mt-1"></div>
-                        </div>
-
                         <div class="mb-5 form-password-toggle">
                             <div class="input-group input-group-merge">
                                 <div class="form-floating form-floating-outline">
@@ -561,7 +494,7 @@ exit;
                                 <div id="referral-warning" class="text-danger mt-1"></div>
                             </div>
                         </div>
-                        <div class="g-recaptcha" data-sitekey="6Le_GvAqAAAAAPAhNpadyjfYK_GoY24yVf77kYhC" required></div>
+
                         <div class="mb-5 py-2">
                             <div class="form-check mb-0">
                                 <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms" required>
@@ -657,86 +590,7 @@ function showToast(message, type = "info") {
 }
 
 
-let generatedOTP = '';
-let lastOTPSentTime = 0;
-const OTP_RESEND_DELAY = 120000; // 2 minutes in milliseconds
-
-function checkInitialFields() {
-    const name = document.getElementById('username').value;
-    const mobile = document.getElementById('Number').value;
-    const email = document.getElementById('email').value;
-    
-    const namePattern = /^[A-Za-z\s]+$/;
-    const mobilePattern = /^[0-9]{10}$/;
-    const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-
-    if (!namePattern.test(name)) {
-        document.getElementById('name-warning').textContent = 'Name should contain only letters and spaces';
-        document.getElementById('otpDiv').style.display = 'none';
-        return;
-    } else {
-        document.getElementById('name-warning').textContent = '';
-    }
-
-    if (!mobilePattern.test(mobile)) {
-        document.getElementById('mobile-warning').textContent = 'Please enter a valid 10-digit mobile number';
-        document.getElementById('otpDiv').style.display = 'none';
-        return;
-    }
-
-    if (!emailPattern.test(email)) {
-        document.getElementById('email-warning').textContent = 'Please enter a valid email address';
-        document.getElementById('otpDiv').style.display = 'none';
-        return;
-    } else {
-        document.getElementById('email-warning').textContent = '';
-    }
-
-    // Check if mobile number already exists
-    fetch('<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `checkMobile=true&mobile=${mobile}`
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.exists) {
-            document.getElementById('mobile-warning').textContent = 'This mobile number is already registered Plese Sign in';
-            document.getElementById('otpDiv').style.display = 'none';
-        } else {
-            // Also check email
-            fetch('<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `checkEmail=true&email=${email}`
-            })
-            .then(response => response.json())
-            .then(emailData => {
-                if (emailData.exists) {
-                    document.getElementById('email-warning').textContent = 'This email is already registered';
-                    document.getElementById('otpDiv').style.display = 'none';
-                } else {
-                    document.getElementById('mobile-warning').textContent = '';
-                    document.getElementById('email-warning').textContent = '';
-                    
-                    // Bypass OTP: Immediately show hidden fields
-                    document.getElementById('hiddenFields').style.display = 'block';
-                    document.getElementById('otpDiv').style.display = 'none';
-                    showToast("Email & Mobile are available! Please fill in the remaining details.", "success");
-                }
-            });
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('mobile-warning').textContent = 'Error checking details';
-    });
-}
-
+// Removed checkInitialFields logic
 function validateName() {
     const name = document.getElementById('username').value;
     const namePattern = /^[A-Za-z\s]+$/;
@@ -761,17 +615,7 @@ function validateMobile() {
     }
 }
 
-function validateOTP() {
-    const otp = document.getElementById('otp').value;
-    const warningDiv = document.getElementById('otp-warning');
-    
-    if (otp.length > 0 && otp.length < 6) {
-        warningDiv.textContent = 'OTP must be 6 digits';
-    } else {
-        warningDiv.textContent = '';
-    }
-}
-
+// validateOTP removed
 // Existing validateEmail function
 function validateEmail() {
     const email = document.getElementById('email').value;
@@ -809,91 +653,7 @@ function validateEmail() {
     }
 }
 
-// Existing validateAadhaar function
-function validateAadhaar() {
-    const aadhaar = document.getElementById('aadhar').value;
-    const aadhaarPattern = /^[0-9]{12}$/;
-    const warningDiv = document.getElementById('aadhaar-warning');
-    
-    if (!aadhaarPattern.test(aadhaar) && aadhaar.length > 0) {
-        warningDiv.textContent = 'Aadhaar must be exactly 12 digits';
-        return;
-    } else {
-        warningDiv.textContent = '';
-    }
-
-    // Real-time Aadhaar check
-    if (aadhaarPattern.test(aadhaar)) {
-        fetch('<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `checkAadhaar=true&aadhaar=${aadhaar}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.exists) {
-                warningDiv.textContent = 'This Aadhaar number is already registered.';
-            } else {
-                warningDiv.textContent = '';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            warningDiv.textContent = 'Error checking Aadhaar';
-        });
-    }
-}
-
-// Existing validatePAN function
-function validatePAN() {
-    const pan = document.getElementById('pan').value;
-    const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    const warningDiv = document.getElementById('pan-warning');
-    
-    if (!panPattern.test(pan) && pan.length > 0) {
-        warningDiv.textContent = 'PAN must be in format ABCDE1234F';
-        return;
-    } else {
-        warningDiv.textContent = '';
-    }
-
-    // Real-time PAN check
-    if (panPattern.test(pan)) {
-        fetch('<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `checkPAN=true&pan=${pan}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.exists) {
-                warningDiv.textContent = 'This PAN is already registered.';
-            } else {
-                warningDiv.textContent = '';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            warningDiv.textContent = 'Error checking PAN';
-        });
-    }
-}
-
-function validatePin() {
-    const pin = document.getElementById('pin').value;
-    const pinPattern = /^[0-9]{6}$/;
-    const warningDiv = document.getElementById('pin-warning');
-    
-    if (!pinPattern.test(pin) && pin.length > 0) {
-        warningDiv.textContent = 'Pincode must be exactly 6 digits';
-    } else {
-        warningDiv.textContent = '';
-    }
-}
+// Removed unused validation functions for aadhaar, pan, and pin
 
 function validateReferral() {
     const referral = document.getElementById('referred_by').value;
@@ -907,105 +667,26 @@ function validateReferral() {
     }
 }
 
-function sendOTP(mobile, email) {
-    generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    const regotpmsg = `Your OTP for registration is ${generatedOTP}`;
-    
-    // Only send if not sent recently
-    const currentTime = Date.now();
-    if (currentTime - lastOTPSentTime < OTP_RESEND_DELAY) {
-        return; 
-    }
-
-    fetch('<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `refotp=true&email=${email}&message=${encodeURIComponent(regotpmsg)}`
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            showToast("OTP sent successfully via Email!", "success");
-            lastOTPSentTime = Date.now();
-            startResendTimer();
-        } else {
-            showToast("Error: " + result.msg, "error");
-            console.error("Email error:", result.msg);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function resendOTP() {
-    const currentTime = Date.now();
-    if (currentTime - lastOTPSentTime >= OTP_RESEND_DELAY) {
-        const mobile = document.getElementById('Number').value;
-        const email = document.getElementById('email').value;
-        sendOTP(mobile, email);
-    } else {
-        showToast("Please wait 2 minutes before resending OTP", "warning");
-    }
-}
-
-function startResendTimer() {
-    const resendBtn = document.getElementById('resendBtn');
-    resendBtn.disabled = true;
-    
-    const updateTimer = () => {
-        const currentTime = Date.now();
-        const timeLeft = Math.max(0, OTP_RESEND_DELAY - (currentTime - lastOTPSentTime));
-        const minutes = Math.floor(timeLeft / 60000);
-        const seconds = Math.floor((timeLeft % 60000) / 1000);
-        
-        document.getElementById('resend-message').textContent = 
-            `Resend available in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        
-        if (timeLeft <= 0) {
-            resendBtn.disabled = false;
-            document.getElementById('resend-message').textContent = '';
-        } else {
-            setTimeout(updateTimer, 1000);
-        }
-    };
-    
-    updateTimer();
-}
-
-function verifyOTP() {
-    // OTP is bypassed
-    document.getElementById('hiddenFields').style.display = 'block';
-    document.getElementById('otpDiv').style.display = 'none';
-}
+// OTP functions removed
 
 // Update validateForm to ensure no warnings exist before submission
 function validateForm() {
     const name = document.getElementById('username').value;
     const mobile = document.getElementById('Number').value;
     const email = document.getElementById('email').value;
-    const aadhaar = document.getElementById('aadhar').value;
-    const pan = document.getElementById('pan').value;
-    const pin = document.getElementById('pin').value;
-    const referral = document.getElementById('referral_code').value;
+    const referral = document.getElementById('referred_by') ? document.getElementById('referred_by').value : '';
 
     const namePattern = /^[A-Za-z\s]+$/;
     const mobilePattern = /^[0-9]{10}$/;
     const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
-    const aadhaarPattern = /^[0-9]{12}$/;
-    const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    const pinPattern = /^[0-9]{6}$/;
     const referralPattern = /^[A-Za-z0-9]{6,10}$/;
 
     // Check for warning messages
     const warnings = [
-        document.getElementById('name-warning').textContent,
-        document.getElementById('mobile-warning').textContent,
-        document.getElementById('email-warning').textContent,
-        document.getElementById('aadhaar-warning').textContent,
-        document.getElementById('pan-warning').textContent,
-        document.getElementById('pin-warning').textContent,
-        document.getElementById('referral-warning').textContent
+        document.getElementById('name-warning') ? document.getElementById('name-warning').textContent : '',
+        document.getElementById('mobile-warning') ? document.getElementById('mobile-warning').textContent : '',
+        document.getElementById('email-warning') ? document.getElementById('email-warning').textContent : '',
+        document.getElementById('referral-warning') ? document.getElementById('referral-warning').textContent : ''
     ];
 
     if (warnings.some(warning => warning !== '')) {
@@ -1025,22 +706,6 @@ function validateForm() {
         showToast("Invalid email address.", "error");
         return false;
     }
-    if (!aadhaarPattern.test(aadhaar)) {
-        showToast("Invalid Aadhaar number.", "error");
-        return false;
-    }
-    if (!panPattern.test(pan)) {
-        showToast("Invalid PAN number.", "error");
-        return false;
-    }
-    if (!pinPattern.test(pin)) {
-        showToast("Invalid Pincode.", "error");
-        return false;
-    }
-    // if (document.getElementById('use_referral').checked && referral.length > 0 && !referralPattern.test(referral)) {
-    //     showToast("Invalid referral code.", "error");
-    //     return false;
-    // }
     return true;
 }
 
