@@ -79,11 +79,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
     if (isset($_POST['refotp'])) {
-        $mobile = $_POST['mobile'];
+        $email = $_POST['email'];
         $message = $_POST['message'];
         
-        $result = sendwa($mobile, $message);
-        echo $result;
+        $subject = "UpiGateway Registration OTP";
+        $result = sendEmail($email, $subject, $message);
+        echo json_encode(['success' => $result]);
         $conn->close();
         exit;
     }
@@ -473,6 +474,13 @@ exit;
                         <div id="mobile-warning" class="text-danger mt-1"></div>
                     </div>
 
+                    <div class="form-floating form-floating-outline mb-5">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" 
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Enter a valid email address" required onkeyup="checkInitialFields(); validateEmail()">
+                        <label for="email">Email Id</label>
+                        <div id="email-warning" class="text-danger mt-1"></div>
+                    </div>
+
                     <div class="form-floating form-floating-outline mb-5" id="otpDiv" style="display: none;">
                         <input type="number" class="form-control" id="otp" name="otp" placeholder="Enter OTP" 
                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);" required onkeyup="validateOTP()">
@@ -481,16 +489,10 @@ exit;
                         <button type="button" class="btn btn-primary mt-2" onclick="verifyOTP()">Verify OTP</button>
                         <button type="button" class="btn btn-secondary mt-2" id="resendBtn" onclick="resendOTP()" disabled>Resend OTP</button>
                         <div id="resend-message" class="mt-2" style="font-size: 12px;"></div>
-                        <div class="mt-2" style="font-size: 12px;">OTP sent on WhatsApp. If not received, contact support on 9876543210.</div>
+                        <div class="mt-2" style="font-size: 12px;">OTP sent to Email. If not received, please check your spam folder.</div>
                     </div>
                     
                     <div id="hiddenFields" style="display: none;">
-                        <div class="form-floating form-floating-outline mb-5">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" 
-                                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Enter a valid email address" required onkeyup="validateEmail()">
-                            <label for="email">Email Id</label>
-                            <div id="email-warning" class="text-danger mt-1"></div>
-                        </div>
                         
                         <div class="form-floating form-floating-outline mb-5">
                             <input type="text" class="form-control" id="company" name="company" placeholder="Enter your Company Name" required>
@@ -657,19 +659,32 @@ const OTP_RESEND_DELAY = 120000; // 2 minutes in milliseconds
 function checkInitialFields() {
     const name = document.getElementById('username').value;
     const mobile = document.getElementById('Number').value;
+    const email = document.getElementById('email').value;
+    
     const namePattern = /^[A-Za-z\s]+$/;
     const mobilePattern = /^[0-9]{10}$/;
+    const emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
     if (!namePattern.test(name)) {
         document.getElementById('name-warning').textContent = 'Name should contain only letters and spaces';
         document.getElementById('otpDiv').style.display = 'none';
         return;
+    } else {
+        document.getElementById('name-warning').textContent = '';
     }
 
     if (!mobilePattern.test(mobile)) {
         document.getElementById('mobile-warning').textContent = 'Please enter a valid 10-digit mobile number';
         document.getElementById('otpDiv').style.display = 'none';
         return;
+    }
+
+    if (!emailPattern.test(email)) {
+        document.getElementById('email-warning').textContent = 'Please enter a valid email address';
+        document.getElementById('otpDiv').style.display = 'none';
+        return;
+    } else {
+        document.getElementById('email-warning').textContent = '';
     }
 
     // Check if mobile number already exists
@@ -686,15 +701,31 @@ function checkInitialFields() {
             document.getElementById('mobile-warning').textContent = 'This mobile number is already registered Plese Sign in';
             document.getElementById('otpDiv').style.display = 'none';
         } else {
-            document.getElementById('otpDiv').style.display = 'block';
-            document.getElementById('name-warning').textContent = '';
-            document.getElementById('mobile-warning').textContent = '';
-            sendOTP(mobile);
+            // Also check email
+            fetch('<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `checkEmail=true&email=${email}`
+            })
+            .then(response => response.json())
+            .then(emailData => {
+                if (emailData.exists) {
+                    document.getElementById('email-warning').textContent = 'This email is already registered';
+                    document.getElementById('otpDiv').style.display = 'none';
+                } else {
+                    document.getElementById('otpDiv').style.display = 'block';
+                    document.getElementById('mobile-warning').textContent = '';
+                    document.getElementById('email-warning').textContent = '';
+                    sendOTP(mobile, email);
+                }
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        document.getElementById('mobile-warning').textContent = 'Error checking mobile number';
+        document.getElementById('mobile-warning').textContent = 'Error checking details';
     });
 }
 
@@ -868,20 +899,26 @@ function validateReferral() {
     }
 }
 
-function sendOTP(mobile) {
+function sendOTP(mobile, email) {
     generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
     const regotpmsg = `Your OTP for registration is ${generatedOTP}`;
     
+    // Only send if not sent recently
+    const currentTime = Date.now();
+    if (currentTime - lastOTPSentTime < OTP_RESEND_DELAY) {
+        return; 
+    }
+
     fetch('<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `refotp=true&mobile=${mobile}&message=${encodeURIComponent(regotpmsg)}`
+        body: `refotp=true&email=${email}&message=${encodeURIComponent(regotpmsg)}`
     })
     .then(response => response.text())
-    .then(data => {
-        showToast("OTP sent successfully via WhatsApp!", "success");
+    .then(result => {
+        showToast("OTP sent successfully via Email!", "success");
         lastOTPSentTime = Date.now();
         startResendTimer();
     })
@@ -892,7 +929,8 @@ function resendOTP() {
     const currentTime = Date.now();
     if (currentTime - lastOTPSentTime >= OTP_RESEND_DELAY) {
         const mobile = document.getElementById('Number').value;
-        sendOTP(mobile);
+        const email = document.getElementById('email').value;
+        sendOTP(mobile, email);
     } else {
         showToast("Please wait 2 minutes before resending OTP", "warning");
     }

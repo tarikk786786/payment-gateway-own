@@ -33,8 +33,6 @@ session_start();
     </style>
 </head>
 <?php
-session_start();
-
 if (isset($_POST['submit'])) {
 
     $username = $_POST['username'];
