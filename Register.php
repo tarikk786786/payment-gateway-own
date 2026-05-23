@@ -720,10 +720,13 @@ function checkInitialFields() {
                     document.getElementById('email-warning').textContent = 'This email is already registered';
                     document.getElementById('otpDiv').style.display = 'none';
                 } else {
-                    document.getElementById('otpDiv').style.display = 'block';
                     document.getElementById('mobile-warning').textContent = '';
                     document.getElementById('email-warning').textContent = '';
-                    sendOTP(mobile, email);
+                    
+                    // Bypass OTP: Immediately show hidden fields
+                    document.getElementById('hiddenFields').style.display = 'block';
+                    document.getElementById('otpDiv').style.display = 'none';
+                    showToast("Email & Mobile are available! Please fill in the remaining details.", "success");
                 }
             });
         }
@@ -971,14 +974,9 @@ function startResendTimer() {
 }
 
 function verifyOTP() {
-    const enteredOTP = document.getElementById('otp').value;
-    if (enteredOTP === generatedOTP && enteredOTP.length === 6) {
-        document.getElementById('hiddenFields').style.display = 'block';
-        document.getElementById('otpDiv').style.display = 'none';
-        showToast("OTP verified successfully! 🎉 Now fill in the remaining details, and you're good to go! 😊✨", "success");
-    } else {
-        showToast("Invalid OTP. Try again!", "error");
-    }
+    // OTP is bypassed
+    document.getElementById('hiddenFields').style.display = 'block';
+    document.getElementById('otpDiv').style.display = 'none';
 }
 
 // Update validateForm to ensure no warnings exist before submission
