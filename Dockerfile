@@ -3,13 +3,8 @@ FROM php:8.2-apache
 # Enable Apache mod_rewrite for routing
 RUN a2enmod rewrite
 
-# Install Apache, PHP, and required extensions including MariaDB server
+# Install MariaDB server (Apache and PHP are already included in the base image)
 RUN apt-get update && apt-get install -y \
-    apache2 \
-    php \
-    libapache2-mod-php \
-    php-mysql \
-    php-curl \
     mariadb-server \
     && rm -rf /var/lib/apt/lists/*
 
