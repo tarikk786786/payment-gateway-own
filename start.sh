@@ -27,7 +27,7 @@ mysql -u root -e "CREATE DATABASE IF NOT EXISTS \`Tarik7-353033376eab\`;"
 mysql -u root -e "CREATE USER IF NOT EXISTS 'Tarik7-353033376eab'@'localhost' IDENTIFIED BY 'Tarik@786';"
 mysql -u root -e "GRANT ALL PRIVILEGES ON \`Tarik7-353033376eab\`.* TO 'Tarik7-353033376eab'@'localhost';"
 mysql -u root -e "FLUSH PRIVILEGES;"
-mysql -u root \`Tarik7-353033376eab\` < /var/www/html/u740980038_smmm.sql
+mysql -u root "Tarik7-353033376eab" < /var/www/html/auth/database.sql
 
 # Start Apache in foreground
 apache2-foreground
