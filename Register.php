@@ -236,14 +236,13 @@ function generateRandomInstanceId($length = 16) {
 if ($use_referral && $valid_referral) {
 // Generate random instance_id and instance_secret
 $instanceId = generateRandomInstanceId();
-$instanceId = generateRandomInstanceId();
 $key = md5(rand(00000000, 99999999));
 $pass = password_hash($password, PASSWORD_BCRYPT);
 $today = date("Y-m-d", strtotime("+1 days"));
 
 
-$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId) 
-VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5')";
+$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp) 
+VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '')";
 
 
 $result = mysqli_query($conn, $register);
@@ -358,7 +357,6 @@ if ($result->num_rows > 0) {
 <?php
         exit;
     } else {
-$location = $_POST['location'];
 $key = md5(rand(00000000, 99999999));
 $pass = password_hash($password, PASSWORD_BCRYPT);
 $today = date("Y-m-d", strtotime("+1 days"));
@@ -370,8 +368,8 @@ $today = date("Y-m-d", strtotime("+1 days"));
 $instanceId = generateRandomInstanceId();
 
 
-$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId) 
-VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5')";
+$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp) 
+VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '')";
 
 
 $result = mysqli_query($conn, $register);
