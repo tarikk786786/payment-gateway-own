@@ -3,6 +3,16 @@ FROM php:8.2-apache
 # Enable Apache mod_rewrite for routing
 RUN a2enmod rewrite
 
+# Install Apache, PHP, and required extensions including MariaDB server
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    php \
+    libapache2-mod-php \
+    php-mysql \
+    php-curl \
+    mariadb-server \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install mysqli extension for the database connection
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
