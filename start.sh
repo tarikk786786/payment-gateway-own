@@ -8,9 +8,19 @@ PORT=${PORT:-10000}
 # Modify Apache configuration to listen on the dynamic Render PORT
 sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 
+# Ensure MySQL socket directory exists with correct permissions
+mkdir -p /var/run/mysqld
+chown -R mysql:mysql /var/run/mysqld
+
 # Start MySQL Service
-service mariadb start
-sleep 3
+/etc/init.d/mariadb start || /etc/init.d/mysql start
+
+# Wait for MariaDB to be ready
+echo "Waiting for MariaDB to start..."
+while ! mysqladmin ping -h"localhost" --silent; do
+    sleep 1
+done
+echo "MariaDB started successfully!"
 
 # Create database, user, and import schema
 mysql -u root -e "CREATE DATABASE IF NOT EXISTS \`Tarik7-353033376eab\`;"
