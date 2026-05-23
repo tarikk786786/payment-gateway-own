@@ -84,7 +84,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         $subject = "UpiGateway Registration OTP";
         $result = sendEmail($email, $subject, $message);
-        echo json_encode(['success' => $result]);
+        
+        if (strpos($result, 'successfully') !== false) {
+            echo json_encode(['success' => true, 'msg' => $result]);
+        } else {
+            echo json_encode(['success' => false, 'msg' => $result]);
+        }
         $conn->close();
         exit;
     }
@@ -916,11 +921,16 @@ function sendOTP(mobile, email) {
         },
         body: `refotp=true&email=${email}&message=${encodeURIComponent(regotpmsg)}`
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(result => {
-        showToast("OTP sent successfully via Email!", "success");
-        lastOTPSentTime = Date.now();
-        startResendTimer();
+        if (result.success) {
+            showToast("OTP sent successfully via Email!", "success");
+            lastOTPSentTime = Date.now();
+            startResendTimer();
+        } else {
+            showToast("Error: " + result.msg, "error");
+            console.error("Email error:", result.msg);
+        }
     })
     .catch(error => console.error('Error:', error));
 }

@@ -40,12 +40,19 @@ if (empty($otp)) {
         // ✅ OTP भेजो Email से
         $msg = "आपका लॉगिन OTP है: $otp_code\n\nयह OTP 5 मिनट तक वैध है।";
         $subject = "UpiGateway Login OTP";
-        sendEmail($email, $subject, nl2br($msg));
-
-        echo json_encode([
-            'status' => true,
-            'message' => 'OTP sent successfully via Email',
-        ]);
+        $resultEmail = sendEmail($email, $subject, nl2br($msg));
+        
+        if (strpos($resultEmail, 'successfully') !== false) {
+            echo json_encode([
+                'status' => true,
+                'message' => 'OTP sent successfully via Email',
+            ]);
+        } else {
+            echo json_encode([
+                'status' => false,
+                'message' => 'Failed to send OTP: ' . $resultEmail,
+            ]);
+        }
     } else {
         echo json_encode(['status' => false, 'message' => 'Mobile not found']);
     }
