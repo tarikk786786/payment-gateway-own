@@ -241,8 +241,8 @@ $pass = password_hash($password, PASSWORD_BCRYPT);
 $today = date("Y-m-d", strtotime("+1 days"));
 
 
-$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp) 
-VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '')";
+$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp, otp_expiry) 
+VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '', NOW())";
 
 
 $result = mysqli_query($conn, $register);
@@ -368,8 +368,8 @@ $today = date("Y-m-d", strtotime("+1 days"));
 $instanceId = generateRandomInstanceId();
 
 
-$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp) 
-VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '')";
+$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp, otp_expiry) 
+VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '', NOW())";
 
 
 $result = mysqli_query($conn, $register);
