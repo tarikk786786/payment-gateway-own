@@ -16,8 +16,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # Expose port 80 as default for documentation
 EXPOSE 80
 
-# Make start script executable
-RUN chmod +x /var/www/html/start.sh
+# Make start script executable and fix Windows line endings
+RUN sed -i 's/\r$//' /var/www/html/start.sh && chmod +x /var/www/html/start.sh
 
 # Use the start script to launch Apache
 CMD ["/var/www/html/start.sh"]
