@@ -158,7 +158,7 @@ if (isset($_POST['create'])) {
 
     
 $use_referral = isset($_POST['use_referral']) ? true : false;
-$referred_by = $_POST['referral_code'];
+$referred_by = isset($_POST['referral_code']) ? $_POST['referral_code'] : '';
 
     // Check if the referred_by code exists in the database
     $sql_check = "SELECT id FROM users WHERE referral_code = ?";
@@ -178,8 +178,8 @@ $referred_by = $_POST['referral_code'];
     }
 
 
-$mobile =  $_POST['mobile'];
-$email = $_POST['email'];
+$mobile = isset($_POST['mobile']) ? $_POST['mobile'] : '';
+$email = isset($_POST['email']) ? $_POST['email'] : '';
 $referralCode = generateReferralCode();
 
 $checkMobileQuery = "SELECT * FROM `users` WHERE `mobile` = '$mobile'";
@@ -197,8 +197,8 @@ echo "<script>alert('Oops! Sorry, Email Already Exists. Please use a different e
 exit;
 } else {
 // Proceed with user registration
-$password = $_POST['password'];
-$name = $_POST['name'];
+$password = isset($_POST['password']) ? $_POST['password'] : '';
+$name = isset($_POST['name']) ? $_POST['name'] : '';
 $company = isset($_POST['company']) ? $_POST['company'] : '';
 $pin = isset($_POST['pin']) ? $_POST['pin'] : '';
 $pan = isset($_POST['pan']) ? $_POST['pan'] : '';
@@ -440,7 +440,7 @@ echo '
                 <form class="mb-5" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" onsubmit="return validateForm()">
                     <div class="form-floating form-floating-outline mb-5">
                         <input type="text" class="form-control" id="username" name="name" placeholder="Enter your Name" 
-                               pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required autofocus onkeyup="checkInitialFields(); validateName()">
+                               pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required autofocus onkeyup="validateName()">
                         <label for="username">Name</label>
                         <div id="name-warning" class="text-danger mt-1"></div>
                     </div>
