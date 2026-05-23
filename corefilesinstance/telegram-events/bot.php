@@ -338,7 +338,7 @@ elseif (isset($message["text"]) && strpos($message["text"], "/paylink") === 0) {
             // You can generate the payment link and store it if needed
 
             // URL of the PHP page
-            $url = 'https://chickenpox.in/api/create-order';
+            $url = 'https://' . $_SERVER['HTTP_HOST'] . '/api/create-order';
             $tmeorderid="tme" . uniqid() . uniqid() . time() . mt_rand();
 
             // Data to be sent in the POST request
@@ -347,7 +347,7 @@ elseif (isset($message["text"]) && strpos($message["text"], "/paylink") === 0) {
                 'user_token' => $cxrpaylinkuser_token,
                 'amount' => $amount,
                 'order_id' => $tmeorderid,
-                'redirect_url' => 'https://chickenpox.in/success',
+                'redirect_url' => 'https://' . $_SERVER['HTTP_HOST'] . '/success',
                 'remark1' => 'telegramlink',
                 'remark2' => 'test2',
                 'route' =>$routetouse,
@@ -400,7 +400,7 @@ elseif (isset($message["text"]) && strpos($message["text"], "/paylink") === 0) {
                 // Close connection (if needed)
                 // No need to close the connection if you want to reuse $pdo elsewhere
 
-                $paymentUrltoshow = "https://chickenpox.in/shrt/" . $shortUrl;
+                $paymentUrltoshow = "https://" . $_SERVER["HTTP_HOST"] . "/shrt/" . $shortUrl;
 
                 // Prepare and send the response message with the payment link
                 $responseMessage = "Hello😊,\n"; // Greet the user with their name

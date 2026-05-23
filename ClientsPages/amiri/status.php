@@ -29,7 +29,7 @@
 <?php
 require_once("auth/components/main.components.php");
 // API endpoint URL
-$url = "https://chickenpox.in/order/status";
+$url = "https://" . $_SERVER["HTTP_HOST"] . "/order/status";
 
 // JSON payload
 $data = json_encode([

@@ -68,7 +68,7 @@ $orders = "upi://pay?".$intd;
 // echo($orders);
 // Your custom QR code API URL
 // $url = 'https://imbx.in/secret/create_qr.php';
-$url = 'https://chickenpox.in/auth/qr_api.php';
+$url = 'https://' . $_SERVER['HTTP_HOST'] . '/auth/qr_api.php';
 // $url = 'https://api.qrserver.com/v1/create-qr-code/';
 
 // Data to be sent in the POST request

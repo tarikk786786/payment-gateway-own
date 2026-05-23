@@ -515,7 +515,8 @@ updateTime();
     <li><a href="user_merchant"><i class="sidebar-item-icon fa fa-users"></i><span class="nav-label">User Merchents</span></a></li>
     <?php } ?>
     
-    <li class="heading">Merchant Setting</li>
+    <li class="heading">Developer Setting</li>
+    <li><a href="api_settings"><i class="sidebar-item-icon fa fa-key"></i><span class="nav-label">API Credentials</span></a></li>
     <li><a href="connect_merchant"><i class="sidebar-item-icon fa fa-link"></i><span class="nav-label">Connect Merchant</span></a></li>
     <li><a href="payment_link"><i class="sidebar-item-icon fa fa-share-alt"></i><span class="nav-label">Payment Link</span></a></li>
     <li><a href="costom_checkout"><i class="sidebar-item-icon fa fa-shopping-cart"></i><span class="nav-label">Costmize_Checkout</span><span class="badge badge-danger ml-2">HOT</span></a></li>

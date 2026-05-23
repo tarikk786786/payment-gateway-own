@@ -214,7 +214,7 @@ $total_pages = ceil($total_records / $records_per_page);
 <?php
 if (isset($_POST['notify_all'])) {
     // URL जिसे हिट करना है
-    $url = "https://chickenpox.in/crons/CronExpiryAlert.php";
+    $url = "https://" . $_SERVER["HTTP_HOST"] . "/crons/CronExpiryAlert.php";
     // cURL सेशन प्रारंभ करें
     $ch = curl_init();
     // cURL के विकल्प सेट करें

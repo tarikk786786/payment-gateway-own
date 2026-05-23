@@ -16,7 +16,7 @@ $order_id = "ORD" . rand(100000, 999999) . time();
 $token = "1dff129719473746fd60dd947ed6fa26";
 
 // API endpoint
-$url = "https://chickenpox.in/api/create-order";
+$url = "https://" . $_SERVER["HTTP_HOST"] . "/api/create-order";
 
 // Request Data
 $data = array(

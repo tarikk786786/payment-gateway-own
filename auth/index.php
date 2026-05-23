@@ -5,18 +5,33 @@ session_start();
 ?>
 
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-wide customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="common/assets/" data-template="vertical-menu-template" data-style="light">
-
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-<link rel="icon" href="https://chickenpox.in/common/img/logoshild.png">
-<title><?php echo $site_settings['brand_name']; ?> | Login</title>
-<link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="auth-custom.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $site_settings['brand_name']; ?> | Secure Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .floating-input:focus ~ .floating-label,
+        .floating-input:not(:placeholder-shown) ~ .floating-label {
+            transform: translateY(-1.5rem) scale(0.85);
+            color: #38bdf8;
+        }
+    </style>
 </head>
-
 <?php
 session_start();
 
@@ -95,108 +110,95 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
-<body>
-    <div class="premium-auth-container">
-        
-        <!-- Left Animated Panel -->
-        <div class="premium-auth-left">
-            <div class="auth-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="glass-panel w-full max-w-4xl rounded-3xl overflow-hidden flex flex-col md:flex-row">
+        <!-- Left Banner -->
+        <div class="hidden md:flex md:w-1/2 bg-gradient-to-br from-indigo-600 to-blue-900 p-12 flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+            
+            <div class="z-10">
+                <h1 class="text-4xl font-extrabold text-white mb-4">UpiGateway<br><span class="text-blue-300">Modernized.</span></h1>
+                <p class="text-blue-100 text-lg leading-relaxed">Experience seamless, ultra-secure, and lightning-fast settlements with our completely upgraded enterprise infrastructure.</p>
             </div>
-            <div class="premium-auth-left-content">
-                <h1>Welcome to<br>Advanced Payments</h1>
-                <p>Experience seamless, secure, and instant settlements with our enterprise-grade infrastructure.</p>
-                
-                <ul class="feature-list">
-                    <li><i class="ri-shield-check-fill"></i> Bank-Grade Security & PCI-DSS</li>
-                    <li><i class="ri-flashlight-fill"></i> Instant Settlements 24/7</li>
-                    <li><i class="ri-bar-chart-box-fill"></i> Real-time Analytics & Dashboard</li>
-                </ul>
+            
+            <div class="z-10 space-y-4">
+                <div class="flex items-center text-blue-100"><i class="fas fa-shield-alt w-6 text-xl"></i> <span>Bank-Grade 256-bit Security</span></div>
+                <div class="flex items-center text-blue-100"><i class="fas fa-bolt w-6 text-xl"></i> <span>Instant Settlements 24/7</span></div>
+                <div class="flex items-center text-blue-100"><i class="fas fa-chart-line w-6 text-xl"></i> <span>Real-time Analytics</span></div>
             </div>
         </div>
 
-        <!-- Right Form Panel -->
-        <div class="premium-auth-right">
-            <div class="auth-form-wrapper">
-                <?php if(!empty($site_settings['logo_url'])): ?>
-                    <img src="<?php echo $site_settings['logo_url']; ?>" alt="Logo" class="auth-logo">
+        <!-- Login Form -->
+        <div class="w-full md:w-1/2 p-8 md:p-12">
+            <div class="mb-8 text-center md:text-left">
+                <?php if(!empty($site_settings['logo_url']) && $site_settings['logo_url'] !== 'default_logo.png'): ?>
+                    <img src="<?php echo $site_settings['logo_url']; ?>" alt="Logo" class="h-12 mb-4 mx-auto md:mx-0">
                 <?php else: ?>
-                    <h2 style="color: var(--auth-primary); margin-bottom: 2rem;">Gateway</h2>
+                    <div class="inline-block bg-blue-600 p-3 rounded-xl mb-4 text-white">
+                        <i class="fas fa-wallet text-2xl"></i>
+                    </div>
                 <?php endif; ?>
-                
-                <h2>Sign in to your account</h2>
-                <p>Welcome back! Please enter your details.</p>
-                
-                <form id="formAuthentication" action="index.php" method="POST">
-                    
-                    <div class="floating-group">
-                        <input type="text" class="floating-input" id="mobileNumber" name="username" 
-                               placeholder=" " maxlength="10" pattern="\d{10}" required>
-                        <label class="floating-label" for="mobileNumber">Mobile Number</label>
-                    </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                <p class="text-gray-400">Sign in to access your dashboard</p>
+            </div>
 
-                    <div class="floating-group">
-                        <input type="password" class="floating-input" id="password" name="password" 
-                               placeholder=" " required>
-                        <label class="floating-label" for="password">Password</label>
-                        <span class="password-toggle" id="togglePassword">
-                            <i class="ri-eye-off-line"></i>
-                        </span>
-                    </div>
-
-                    <div class="auth-links">
-                        <label style="display:flex; align-items:center; cursor:pointer; color: var(--auth-text-muted);">
-                            <input type="checkbox" id="remember-me" required style="margin-right: 8px;">
-                            Accept Terms
-                        </label>
-                        <a href="../forgot-password">Forgot password?</a>
-                    </div>
-
-                    <button class="auth-btn" type="submit" id="loginBtn" name="submit">Sign in</button>
-                    
-                </form>
-
-                <div class="social-login-divider">or continue with</div>
-                
-                <a href="#" class="social-btn">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
-                    Sign in with Google
-                </a>
-
-                <p class="text-center mt-4" style="color: var(--auth-text-muted);">
-                    Don't have an account? <a href="../Register" style="color: var(--auth-primary); text-decoration: none; font-weight: 600;">Sign up</a>
-                </p>
-
-                <div class="security-badges">
-                    <div class="badge-item"><i class="ri-lock-2-fill"></i> 256-bit Encryption</div>
-                    <div class="badge-item"><i class="ri-shield-check-line"></i> PCI DSS Compliant</div>
+            <form id="formAuthentication" action="index.php" method="POST" class="space-y-6">
+                <div class="relative">
+                    <input type="text" id="mobileNumber" name="username" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " maxlength="10" pattern="\d{10}" required>
+                    <label for="mobileNumber" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Mobile Number</label>
                 </div>
+
+                <div class="relative">
+                    <input type="password" id="password" name="password" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " required>
+                    <label for="password" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Password</label>
+                    <button type="button" id="togglePassword" class="absolute right-4 top-3 text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-eye-slash"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center text-gray-400 cursor-pointer hover:text-white transition-colors">
+                        <input type="checkbox" required class="mr-2 rounded border-gray-600 text-blue-600 focus:ring-blue-500 bg-gray-800">
+                        <span>I accept the Terms</span>
+                    </label>
+                    <a href="../forgot-password" class="text-blue-400 hover:text-blue-300 transition-colors font-medium">Forgot password?</a>
+                </div>
+
+                <button type="submit" id="loginBtn" name="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1">
+                    Sign In to Dashboard
+                </button>
+            </form>
+
+            <div class="mt-8 text-center">
+                <p class="text-gray-400 text-sm">
+                    Don't have an account? <a href="../Register" class="text-blue-400 hover:text-blue-300 font-bold transition-colors">Sign up</a>
+                </p>
             </div>
         </div>
-
     </div>
 
     <script>
-        // Login Button Spinner
-        document.getElementById('loginBtn').addEventListener('click', function(event) {
-            if(document.getElementById('formAuthentication').checkValidity()) {
-                this.innerHTML = 'Processing...';
-                this.disabled = true;
-                this.form.submit();
-            }
-        });
-
         // Password Toggle
         document.getElementById('togglePassword').addEventListener('click', function() {
             const password = document.getElementById('password');
             const icon = this.querySelector('i');
             if (password.type === 'password') {
                 password.type = 'text';
-                icon.classList.replace('ri-eye-off-line', 'ri-eye-line');
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             } else {
                 password.type = 'password';
-                icon.classList.replace('ri-eye-line', 'ri-eye-off-line');
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            }
+        });
+
+        // Loading state on submit
+        document.getElementById('formAuthentication').addEventListener('submit', function() {
+            if(this.checkValidity()) {
+                const btn = document.getElementById('loginBtn');
+                btn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> Authenticating...';
+                btn.style.opacity = '0.8';
+                btn.style.pointerEvents = 'none';
             }
         });
     </script>

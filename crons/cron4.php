@@ -129,7 +129,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     
     
     // The URL you want to request using the user_token
-    $url = "https://chickenpox.in/phnpe/user_txn.php?no=$user_token";
+    $url = "https://" . $_SERVER["HTTP_HOST"] . "/phnpe/user_txn.php?no=$user_token";
     
     // Initialize cURL session
     $ch = curl_init($url);
@@ -199,8 +199,8 @@ while ($row = mysqli_fetch_assoc($result)) {
     $diss = rand(1111111111, 999999999);
 
     // Build the URL for fetching txn_data
-    // $txn_data_url = "https://chickenpox.in/HDFCSoft/payrequest.php?sessionid=$seassion&cnumber=$customer_mobile&amount=$amount&no=$customer_mobile&tidList=$tidlist&dis=$diss";
-    $txn_data_url = "https://chickenpox.in/payment/mstatement.php?no=$customer_mobile&session=$seassion";
+    // $txn_data_url = "https://" . $_SERVER["HTTP_HOST"] . "/HDFCSoft/payrequest.php?sessionid=$seassion&cnumber=$customer_mobile&amount=$amount&no=$customer_mobile&tidList=$tidlist&dis=$diss";
+    $txn_data_url = "https://" . $_SERVER["HTTP_HOST"] . "/payment/mstatement.php?no=$customer_mobile&session=$seassion";
     // Fetch the txn_data from the URL
     $txn_data = file_get_contents($txn_data_url);
     // Decode the JSON response

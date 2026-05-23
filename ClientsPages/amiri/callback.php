@@ -14,7 +14,7 @@ $order_id = $_GET['order_id'] ?? '';
 $ch = curl_init();
 
 // Set the URL
-curl_setopt($ch, CURLOPT_URL, 'https://chickenpox.in/api/check-order-status');
+curl_setopt($ch, CURLOPT_URL, 'https://' . $_SERVER['HTTP_HOST'] . '/api/check-order-status');
 
 // Set the HTTP request method to POST
 curl_setopt($ch, CURLOPT_POST, 1);
@@ -197,7 +197,7 @@ $message = urlencode("New Payment Recived from *$costmor_ID*
         <!--</div>-->
 
         <div class="text-center">
-            <a href="https://chickenpox.in/ClientsPages/amiri/index.php?branch=<?=$branch?>" class="inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
+            <a href="https://" . $_SERVER["HTTP_HOST"] . "/ClientsPages/amiri/index.php?branch=<?=$branch?>" class="inline-block bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition duration-300">
                 Make New Payment
             </a>
 
