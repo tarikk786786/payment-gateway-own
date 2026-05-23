@@ -13,5 +13,8 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Expose port 80
-EXPOSE 80
+# Expose port (Render sets this dynamically, but defaults to 10000 locally if we use it)
+ENV PORT=80
+
+# Update Apache configuration to listen on the PORT environment variable
+RUN sed -s -i -e "s/80/\$\{PORT\}/" /etc/apache2/ports.conf /etc/apache2/sites-available/*.conf
