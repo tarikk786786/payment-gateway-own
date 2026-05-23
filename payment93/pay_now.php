@@ -84,7 +84,7 @@ $paytmintent = "paytmmp://cash_wallet?pa=$upi_id&pn=$unitId&am=$amount&cu=INR&tn
 // Define the API endpoint
 // Your custom QR code API URL
 // $url = 'https://imbx.in/secret/create_qr.php';
-$url = 'https://chickenpox.in/secret/create_qr.php';
+$url = 'https://' . $_SERVER['HTTP_HOST'] . '/secret/create_qr.php';
 // Data to be sent in the POST request
 $data = [
     'data' => $orders, // The data to encode in the QR

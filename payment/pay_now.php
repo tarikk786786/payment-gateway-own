@@ -182,7 +182,7 @@ if (isset($jsonResponse['qr_code'])) {
 // UPI डाटा
 $orders = "upi://pay?".$intd;
 // Your custom QR code API URL
-$url = 'https://chickenpox.in/secret/create_qr.php';
+$url = 'https://' . $_SERVER['HTTP_HOST'] . '/secret/create_qr.php';
 
 // Data to be sent in the POST request
 $data = [

@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // log_message("Customer mobile: $customer_mobile, Order ID: $order_id, Amount: $amount, Callback URL: $redirect_url");
 
     // Part 4 code
-    $url = 'https://chickenpox.in/api/create-order';
+    $url = 'https://' . $_SERVER['HTTP_HOST'] . '/api/create-order';
 
     // Data to be sent in the POST request
     $postData = array(

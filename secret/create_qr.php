@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // API URL
-    $url = 'https://chickenpox.in/secret/Qrcode/do.php';
+    $url = 'https://' . $_SERVER['HTTP_HOST'] . '/secret/Qrcode/do.php';
 
     // Data to be sent in the POST request
     $data = [

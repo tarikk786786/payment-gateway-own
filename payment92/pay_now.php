@@ -71,7 +71,7 @@ $orders = "upi://pay?$intd";
 $paytmintent="paytmmp://cash_wallet?pa=$upi_id&am=$amount&pn=$unitId&tn=$cxrbytectxnref&tr=$cxrbytectxnref&tid=$cxrbytectxnref&amp;mc=5641&amp;cu=INR&amp;url=&amp;mode=02&amp;purpose=00&amp;orgid=159002&amp;sign=MEUCIHldtBS8sv53BbdI9jtTN4vRokbPT91Fm6wlPQCN/sVkAiEAs4p9TPwTvLvPsceQLjSOBL1lAKhrsHdHMnfiDFyu1Aw=&amp;featuretype=money_transfer";
 
 // URL-encode the UPI URL
-$url = 'https://chickenpox.in/secret/create_qr.php';
+$url = 'https://' . $_SERVER['HTTP_HOST'] . '/secret/create_qr.php';
 // Data to be sent in the POST request
 $data = [
     'data' => $orders, // The data to encode in the QR

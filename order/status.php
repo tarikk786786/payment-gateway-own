@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $request_data) {
         // log_message("Attempting to query the database for user_token: $user_token and order_id: $order_id");
 
         // API URL
-        $api_url = 'https://chickenpox.in/api/check-order-status';
+        $api_url = 'https://' . $_SERVER['HTTP_HOST'] . '/api/check-order-status';
 
         // Form-encoded payload data
         $post_data = [
