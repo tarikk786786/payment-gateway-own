@@ -99,42 +99,8 @@ function getResponse($url, $verifySSL = true, $timeout = 30, $connectTimeout = 1
 
 
 function sendWA($mobile_no, $msg) {
-    $message = urlencode($msg);
-    $sender = "9876543210";
-    $api_key = "GxtcnAHodm3okM36s7kNqqRyNlpAiC";
-    $footer = urlencode("Team UpiGateway");
-
-    $primary_url = "https://wa.whatsappgateway.in/send-message?api_key=$api_key&sender=$sender&number=91$mobile_no&message=$message&footer=$footer";
-
-    // // Retry logic: max 3 attempts
-    // for ($i = 1; $i <= 3; $i++) {
-    //     $primary_result = getResponse($primary_url);
-
-    //     if ($primary_result['success']) {
-    //         $decoded = json_decode($primary_result['response'], true);
-    //         if (isset($decoded['status']) && $decoded['status'] === true) {
-    //             return true; // Success from primary
-    //         }
-    //     }
-
-    //     // If failed and not last attempt, wait 1 second
-    //     if ($i < 3) {
-    //         sleep(1); // wait for 1 second
-    //     }
-    // }
-
-    // Fallback API if all 3 tries fail
-    $appkey = "884f63e3-df1b-45b1-b666-45454";
-    $authkey = "O51unIvfLhHVYlIvrlQ46545smkDruAnJQD1PVdwhysTTh8Hq6HpI";
-    $fallback_url = "https://wa.whatsappgateway.in/sendMessage.php?appkey=$appkey&authkey=$authkey&to=91$mobile_no&message=$message";
-
-    $fallback_result = getResponse($fallback_url, false);
-
-    if ($fallback_result['success'] && stripos($fallback_result['response'], 'error') === false) {
-        return true; // Success from fallback
-    }
-
-    return false; // All failed
+    // Disabled WhatsApp API to use free email service instead
+    return false;
 }
 
 
@@ -347,23 +313,17 @@ $mail->Body = $brandingMessage;
 }
 
 
-// Combined function for sending WhatsApp and Email
+// Combined function for sending WhatsApp and Email (Now Email Only)
 function sendNotification($mobile_no, $email, $msg, $subject) {
-    $wa_success = sendWA($mobile_no, $msg);
     $email_success = sendEmail($email, $subject, $msg);
-
-    $wa_response = [
-        "success" => $wa_success,
-        "message" => $wa_success ? "WhatsApp OTP sent" : "Failed to send WhatsApp OTP"
-    ];
 
     $email_response = [
         "success" => $email_success,
-        "message" => $email_success ? "Email OTP sent" : "Failed to send Email OTP"
+        "message" => $email_success ? "Email notification sent" : "Failed to send Email notification"
     ];
 
     return [
-        "whatsapp" => $wa_response,
+        "whatsapp" => ["success" => false, "message" => "WhatsApp disabled"],
         "email" => $email_response
     ];
 }
@@ -622,8 +582,9 @@ function PlanRenewal($orderid, $utr, $remark1, $txnStatus, $remark2, $site_setti
 
         if ($credit && $credit2) {
             $msg = "Congratulations!! We Credited Your Joining Bonus of Rs. " . $bonusamount . " In UpiGateway™ Wallet";
-            // Assuming sendWA function exists globally or is included
-            sendWA($mobile, $msg);
+            // sendWA disabled, using sendEmail instead for referral bonus
+            $subject = "Referral Join Bonus Credited";
+            sendEmail($email, $subject, $msg);
             // Instead of alert, you might return this message or log it
             // echo '<script>alert("Congratulations!! We Credited Your Joining Bonus In UpiGateway™ Wallet, Please Login Your Account Now");</script>';
         }

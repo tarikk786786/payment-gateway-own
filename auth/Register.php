@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "auth/config.php";
 include 'auth/function.php';
 ?>
@@ -88,170 +89,112 @@ include 'auth/function.php';
 include "auth/config.php";
 
 if (isset($_POST['create'])) {
+    $mobile = $_POST['mobile'];
+    $email = $_POST['email'];
 
-$mobile =  $_POST['mobile'];
-$email = $_POST['email'];
-$referralCode = generateReferralCode();
+    $checkMobileQuery = "SELECT * FROM `users` WHERE `mobile` = '$mobile'";
+    $checkMobileResult = mysqli_query($conn, $checkMobileQuery);
 
-$checkMobileQuery = "SELECT * FROM `users` WHERE `mobile` = '$mobile'";
-$checkMobileResult = mysqli_query($conn, $checkMobileQuery);
+    $checkEmailQuery = "SELECT * FROM `users` WHERE `email` = '$email'";
+    $checkEmailResult = mysqli_query($conn, $checkEmailQuery);
 
-$checkEmailQuery = "SELECT * FROM `users` WHERE `email` = '$email'";
-$checkEmailResult = mysqli_query($conn, $checkEmailQuery);
+    if (mysqli_num_rows($checkMobileResult) > 0) {
+        echo '<script>Swal.fire({title: "Opps! Mobile Number Already Exist.", icon: "error"})</script>';
+    } elseif (mysqli_num_rows($checkEmailResult) > 0) {
+        echo '<script>Swal.fire({title: "Opps! Email Already Exist.", icon: "error"})</script>';
+    } else {
+        $pan = $_POST['pan'];
+        $aadhaar = $_POST['aadhaar'];
 
-if (mysqli_num_rows($checkMobileResult) > 0) {
-echo '
-<script>
-Swal.fire({
-title: "Opps! Sorry Mobile Number Already Exist. Please use a different number",
-text: "Please Click Ok Button!!",
-confirmButtonText: "Ok",
-icon: "error"
-})
-</script>
-';
-exit;
-} elseif (mysqli_num_rows($checkEmailResult) > 0) {
-// The email already exists, display an error message
-   echo '
-<script>
-Swal.fire({
-title: "Opps! Sorry Mobile Number Already Exist. Please use a different email",
-text: "Please Click Ok Button!!",
-confirmButtonText: "Ok",
-icon: "error"
-})
-</script>
-';
-exit;
-} else {
-// Proceed with user registration
-$password = $_POST['password'];
-$name = $_POST['name'];
-$company = $_POST['company'];
-$pin = $_POST['pin'];
-$pan = $_POST['pan'];
-$aadhaar = $_POST['aadhaar'];
+        $checkpan = "SELECT * FROM `users` WHERE `pan` = '$pan'";
+        $checkpanResult = mysqli_query($conn, $checkpan);
 
+        $checkaadhar = "SELECT * FROM `users` WHERE `aadhaar` = '$aadhaar'";
+        $checkAadharResult = mysqli_query($conn, $checkaadhar);
 
-$checkpan = "SELECT * FROM `users` WHERE `pan` = '$pan'";
-$checkpanResult = mysqli_query($conn, $checkpan);
+        if (mysqli_num_rows($checkpanResult) > 0) {
+            echo '<script>Swal.fire({title: "Opps! Pan Number Already Exist.", icon: "error"})</script>';
+        } elseif (mysqli_num_rows($checkAadharResult) > 0) {
+            echo '<script>Swal.fire({title: "Opps! Aadhaar Number Already Exist.", icon: "error"})</script>';
+        } else {
+            // Generate OTP
+            $otp = rand(100000, 999999);
+            $_SESSION['registration_data'] = $_POST;
+            $_SESSION['registration_otp'] = $otp;
 
-$checkaadhar = "SELECT * FROM `users` WHERE `aadhaar` = '$aadhaar'";
-$checkAadharResult = mysqli_query($conn, $checkaadhar);
+            // Send OTP via Email
+            $msg = "Your UpiGateway Registration OTP is: $otp\n\nPlease enter this OTP to complete your registration.";
+            $subject = "UpiGateway Registration OTP";
+            sendEmail($email, $subject, nl2br($msg));
 
-if (mysqli_num_rows($checkpanResult) > 0) {
-echo '
-<script>
-Swal.fire({
-title: "Opps! Sorry Pan Number Already Exist. Please use a different pan number",
-text: "Please Click Ok Button!!",
-confirmButtonText: "Ok",
-icon: "error"
-})
-</script>
-';
-exit;
-} elseif (mysqli_num_rows($checkAadharResult) > 0) {
-// The email already exists, display an error message
-   echo '
-<script>
-Swal.fire({
-title: "Opps! Sorry Aadhaar Number Already Exist. Please use a different Aadhaar Number",
-text: "Please Click Ok Button!!",
-confirmButtonText: "Ok",
-icon: "error"
-})
-</script>
-';
-exit;
-}else{  
-
-
-
-
-
-$location = $_POST['location'];
-$key = md5(rand(00000000, 99999999));
-$pass = password_hash($password, PASSWORD_BCRYPT);
-$today = date("Y-m-d", strtotime("+3 days"));
-
- // Function to generate a random instance_id
-function generateRandomInstanceId($length = 16) {
-  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  $randomString = 'I'; // Fixed 'I' as the first character
-
-  // Generate a random string with the specified length - 7 (for the time part and additional digit)
-  for ($i = 1; $i < $length - 6; $i++) {
-  $randomString .= $characters[rand(0, strlen($characters) - 1)];
-  }
-
-  // Get the current time in seconds since the epoch
-  $currentTime = time();
-
-  // Take the last 6 digits from the current time and append them to the random string
-  $lastSixDigits = substr(strval($currentTime), -6);
-  $randint = rand(100, 900);
-  
-  return $randomString . $randint . $lastSixDigits;
+            // Set flag to show OTP modal
+            $_SESSION['show_otp_modal'] = true;
+        }
+    }
 }
 
+if (isset($_POST['verify_otp'])) {
+    $entered_otp = $_POST['otp_code'];
+    
+    if (isset($_SESSION['registration_otp']) && $entered_otp == $_SESSION['registration_otp']) {
+        // OTP verified, proceed with registration
+        $data = $_SESSION['registration_data'];
+        
+        $mobile = $data['mobile'];
+        $email = $data['email'];
+        $referralCode = generateReferralCode();
+        $password = $data['password'];
+        $name = $data['name'];
+        $company = $data['company'];
+        $pin = $data['pin'];
+        $pan = $data['pan'];
+        $aadhaar = $data['aadhaar'];
+        $location = $data['location'];
+        
+        $key = md5(rand(00000000, 99999999));
+        $pass = password_hash($password, PASSWORD_BCRYPT);
+        $today = date("Y-m-d", strtotime("+3 days"));
 
+        function generateRandomInstanceId($length = 16) {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $randomString = 'I'; 
+            for ($i = 1; $i < $length - 6; $i++) {
+                $randomString .= $characters[rand(0, strlen($characters) - 1)];
+            }
+            $currentTime = time();
+            $lastSixDigits = substr(strval($currentTime), -6);
+            $randint = rand(100, 900);
+            return $randomString . $randint . $lastSixDigits;
+        }
 
-// Generate random instance_id and instance_secret
-$instanceId = generateRandomInstanceId();
+        $instanceId = generateRandomInstanceId();
 
+        $register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`, `instance_id`, referral_code) 
+        VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today', '$instanceId', '$referralCode')";
 
-$register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`, `instance_id`, referral_code) 
-VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today', '$instanceId', $referralCode)";
+        $result = mysqli_query($conn, $register);
 
+        $msg = "Dear $name thanks For Registering Us\nYour Username = $mobile\nYour Password = $password\nThanks & Regards\n*UpiGateway™*";
+        sendNotification($mobile, $email, $msg, "Well-Come To UpiGateway Family");
 
-$result = mysqli_query($conn, $register);
+        // Clear session data
+        unset($_SESSION['registration_data']);
+        unset($_SESSION['registration_otp']);
+        unset($_SESSION['show_otp_modal']);
 
-
-$msg = "Dear $name thanks For Registering Us
-Your Username = $mobile
-Your Password = $password
-Thanks & Regards
-*UpiGateway™*";
-
-
-$encodedMsg = urlencode($msg);
-
-// sendWA($mobile,$encodedMsg);
-sendNotification($mobile, $email, $msg, "Well-Come To UpiGateway Family");
-if ($result) {
-
-echo '
-<script>
-Swal.fire({
-title: "Registration Successfull!!",
-text: "Please Click Ok Button!!",
-confirmButtonText: "Ok",
-icon: "success"
-}).then((result) => {
-if (result.isConfirmed) {
-window.location.href = "auth/index"; // Replace with your desired redirect URL
-}
-});
-</script>
-';
-exit;
-} else {
- echo '
-<script>
-Swal.fire({
-title: "Rgistration Failed!!",
-text: "Please Click Ok Button!!",
-confirmButtonText: "Ok",
-icon: "error"
-})
-</script>
-';
-exit;
-}
-}
-}
+        if ($result) {
+            echo '<script>
+            Swal.fire({title: "Registration Successfull!!", icon: "success"}).then(() => {
+                window.location.href = "index.php";
+            });
+            </script>';
+        } else {
+            echo '<script>Swal.fire({title: "Registration Failed!!", icon: "error"})</script>';
+        }
+    } else {
+        echo '<script>Swal.fire({title: "Invalid OTP", text: "The OTP you entered is incorrect.", icon: "error"})</script>';
+        $_SESSION['show_otp_modal'] = true; // Keep modal open
+    }
 }
 ?>
     <div class="dynamic-background">
@@ -399,6 +342,53 @@ Sign up
 
 <!-- Page JS -->
 <script src="common/assets/js/pages-auth.js"></script>
+
+<?php if (isset($_SESSION['show_otp_modal']) && $_SESSION['show_otp_modal']): ?>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        Swal.fire({
+            title: 'Verify Your Email',
+            text: 'We have sent a 6-digit OTP to your email address. Please enter it below to complete registration.',
+            input: 'text',
+            inputAttributes: {
+                maxlength: 6,
+                autocapitalize: 'off',
+                autocorrect: 'off',
+                placeholder: '123456'
+            },
+            showCancelButton: true,
+            cancelButtonText: 'Cancel Registration',
+            confirmButtonText: 'Verify OTP',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the OTP via a hidden form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = window.location.href;
+                
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'verify_otp';
+                actionInput.value = '1';
+                form.appendChild(actionInput);
+                
+                const otpInput = document.createElement('input');
+                otpInput.type = 'hidden';
+                otpInput.name = 'otp_code';
+                otpInput.value = result.value;
+                form.appendChild(otpInput);
+                
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                // Cancelled
+                window.location.href = window.location.href;
+            }
+        });
+    });
+</script>
+<?php endif; ?>
 
 </body>
 

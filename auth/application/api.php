@@ -20,12 +20,15 @@ if (empty($mobile)) {
 
 // Step 1: Send OTP if OTP is empty
 if (empty($otp)) {
-    $stmt = $conn->prepare("SELECT id,name,mobile,role,balance,company,expiry,vip_expiry,tranjection_Count,planId,acc_lock,acc_ban,referral_code,merchentRouting,logo FROM users WHERE mobile = ?");
+    $stmt = $conn->prepare("SELECT id,name,mobile,email,role,balance,company,expiry,vip_expiry,tranjection_Count,planId,acc_lock,acc_ban,referral_code,merchentRouting,logo FROM users WHERE mobile = ?");
     $stmt->bind_param("s", $mobile);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows === 1) {
+        $userData = $result->fetch_assoc();
+        $email = $userData['email'];
+
         // $otp_code = rand(100000, 999999);
         $otp_code = 123456;
 
@@ -34,13 +37,14 @@ if (empty($otp)) {
         $stmt->bind_param("ss", $otp_code, $mobile);
         $stmt->execute();
 
-        // ✅ OTP भेजो WhatsApp से
+        // ✅ OTP भेजो Email से
         $msg = "आपका लॉगिन OTP है: $otp_code\n\nयह OTP 5 मिनट तक वैध है।";
-        sendWA($mobile, $msg);
+        $subject = "UpiGateway Login OTP";
+        sendEmail($email, $subject, nl2br($msg));
 
         echo json_encode([
             'status' => true,
-            'message' => 'OTP sent successfully via WhatsApp',
+            'message' => 'OTP sent successfully via Email',
         ]);
     } else {
         echo json_encode(['status' => false, 'message' => 'Mobile not found']);
