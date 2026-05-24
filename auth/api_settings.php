@@ -1,18 +1,14 @@
 <?php include "header.php";
 
-// Initialize keys if missing
-if (empty($userdata['api_key'])) {
-    $new_key = 'dz_live_' . bin2hex(random_bytes(12));
-    $new_secret = 'dz_secret_' . bin2hex(random_bytes(24));
-    $conn->query("UPDATE users SET api_key = '$new_key', api_secret = '$new_secret' WHERE id = '{$userdata['id']}'");
-    $userdata['api_key'] = $new_key;
-    $userdata['api_secret'] = $new_secret;
-}
+// API Key is handled by user_token from registration
+// We just map it here for the UI
+$userdata['api_key'] = $userdata['user_token'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['webhook_url'])) {
     $wh = $conn->real_escape_string($_POST['webhook_url']);
-    $conn->query("UPDATE users SET webhook_url = '$wh' WHERE id = '{$userdata['id']}'");
-    $userdata['webhook_url'] = $wh;
+    // Webhooks in this system are stored in callback_url
+    $conn->query("UPDATE users SET callback_url = '$wh' WHERE id = '{$userdata['id']}'");
+    $userdata['callback_url'] = $wh;
     $success_msg = "Webhook URL updated successfully.";
 }
 ?>
@@ -40,14 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['webhook_url'])) {
                             <label class="form-label fw-bold">API Key (Public)</label>
                             <input type="text" class="form-control bg-light" value="<?php echo htmlspecialchars($userdata['api_key']); ?>" readonly>
                         </div>
-
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">API Secret (Private)</label>
-                            <div class="input-group">
-                                <input type="password" class="form-control bg-light" id="apiSecret" value="<?php echo htmlspecialchars($userdata['api_secret']); ?>" readonly>
-                                <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('apiSecret').type='text'">Show</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -62,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['webhook_url'])) {
                         <form method="POST">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Webhook URL</label>
-                                <input type="url" name="webhook_url" class="form-control" placeholder="https://your-server.com/api/webhook" value="<?php echo htmlspecialchars($userdata['webhook_url'] ?? ''); ?>" required>
+                                <input type="url" name="webhook_url" class="form-control" placeholder="https://your-server.com/api/webhook" value="<?php echo htmlspecialchars($userdata['callback_url'] ?? ''); ?>" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Save Webhook URL</button>
                         </form>
