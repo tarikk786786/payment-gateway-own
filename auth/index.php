@@ -35,7 +35,7 @@ session_start();
 <?php
 if (isset($_POST['submit'])) {
 
-    $username = $_POST['username'];
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password'];
 
     $query = "SELECT * FROM users WHERE mobile = '$username'";

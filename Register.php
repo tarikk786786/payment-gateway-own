@@ -178,8 +178,8 @@ $referred_by = isset($_POST['referral_code']) ? $_POST['referral_code'] : '';
     }
 
 
-$mobile = isset($_POST['mobile']) ? $_POST['mobile'] : '';
-$email = isset($_POST['email']) ? $_POST['email'] : '';
+$mobile = isset($_POST['mobile']) ? mysqli_real_escape_string($conn, $_POST['mobile']) : '';
+$email = isset($_POST['email']) ? mysqli_real_escape_string($conn, $_POST['email']) : '';
 $referralCode = generateReferralCode();
 
 $checkMobileQuery = "SELECT * FROM `users` WHERE `mobile` = '$mobile'";
@@ -198,12 +198,12 @@ exit;
 } else {
 // Proceed with user registration
 $password = isset($_POST['password']) ? $_POST['password'] : '';
-$name = isset($_POST['name']) ? $_POST['name'] : '';
-$company = isset($_POST['company']) ? $_POST['company'] : '';
-$pin = isset($_POST['pin']) ? $_POST['pin'] : '';
-$pan = isset($_POST['pan']) ? $_POST['pan'] : '';
-$aadhaar = isset($_POST['aadhaar']) ? $_POST['aadhaar'] : '';
-$location = isset($_POST['location']) ? $_POST['location'] : '';
+$name = isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '';
+$company = isset($_POST['company']) ? mysqli_real_escape_string($conn, $_POST['company']) : '';
+$pin = isset($_POST['pin']) ? mysqli_real_escape_string($conn, $_POST['pin']) : '';
+$pan = isset($_POST['pan']) ? mysqli_real_escape_string($conn, $_POST['pan']) : '';
+$aadhaar = isset($_POST['aadhaar']) ? mysqli_real_escape_string($conn, $_POST['aadhaar']) : '';
+$location = isset($_POST['location']) ? mysqli_real_escape_string($conn, $_POST['location']) : '';
 
 // Check if Mobile or Email already exists
 if (mysqli_num_rows($checkMobileResult) > 0) {
