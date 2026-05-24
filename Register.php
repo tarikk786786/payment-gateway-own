@@ -239,10 +239,10 @@ $instanceId = generateRandomInstanceId();
 $key = md5(rand(00000000, 99999999));
 $pass = password_hash($password, PASSWORD_BCRYPT);
 $today = date("Y-m-d", strtotime("+1 days"));
-
+$referred_by_val = empty($referred_by_user) ? 'NULL' : (int)$referred_by_user;
 
 $register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp, otp_expiry, is_otp, whatsapp_alert, email_alert, callback_url, bptoken, upiid, login_token) 
-VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '', NOW(), 'NO', 'YES', 'YES', '', '', '', '')";
+VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', $referred_by_val,'5', '', NOW(), 'NO', 'YES', 'YES', '', '', '', '')";
 
 
 $result = mysqli_query($conn, $register);
@@ -368,8 +368,10 @@ $today = date("Y-m-d", strtotime("+1 days"));
 $instanceId = generateRandomInstanceId();
 
 
+$referred_by_val = empty($referred_by_user) ? 'NULL' : (int)$referred_by_user;
+
 $register = "INSERT INTO `users`(`name`, `mobile`, `role`, `balance`, `password`, `email`, `company`, `pin`, `pan`, `aadhaar`, `location`, `user_token`, `expiry`,`vip_expiry`, `instance_id`, referral_code, referred_by, planId, otp, otp_expiry, is_otp, whatsapp_alert, email_alert, callback_url, bptoken, upiid, login_token) 
-VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', '$referred_by_user','5', '', NOW(), 'NO', 'YES', 'YES', '', '', '', '')";
+VALUES ('$name', '$mobile', 'User','0.00', '$pass', '$email', '$company', '$pin', '$pan', '$aadhaar', '$location', '$key', '$today','$today', '$instanceId', '$referralCode', $referred_by_val,'5', '', NOW(), 'NO', 'YES', 'YES', '', '', '', '')";
 
 
 $result = mysqli_query($conn, $register);
