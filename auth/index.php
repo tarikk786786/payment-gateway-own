@@ -141,7 +141,7 @@ if (isset($_POST['submit'])) {
                 <p class="text-gray-400">Sign in to access your dashboard</p>
             </div>
 
-            <form id="formAuthentication" action="index.php" method="POST" class="space-y-6">
+            <form id="formAuthentication" action="" method="POST" class="space-y-6">
                 <div class="relative">
                     <input type="text" id="mobileNumber" name="username" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " maxlength="10" pattern="\d{10}" required>
                     <label for="mobileNumber" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Mobile Number</label>
