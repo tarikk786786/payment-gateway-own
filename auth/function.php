@@ -119,6 +119,8 @@ function sendEmail($to_email, $subject, $message) {
         $mail->Password = 'vyhv sxav ffqj nfno'; // App password generated in Google Account
         $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port = 465; // SMTP Port for SSL
+        $mail->Timeout = 3; // 3 seconds timeout
+        $mail->SMTPDebug = 0;
 
         // Email Details
         $mail->setFrom('india.business@gmail.com', 'UpiGateway'); // Sender email and name
