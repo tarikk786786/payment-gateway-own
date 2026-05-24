@@ -1,7 +1,8 @@
 <!-- Footer -->
     <footer class="fixed bottom-4 left-1/2 transform -translate-x-1/2 opacity-40 hover:opacity-100 transition-opacity duration-300 z-10">
         <div class="text-center text-sm text-gray-600">
-            <span id="currentYear"></span> © <span class="font-bold text-indigo-600">UpiGateway™</span> - All rights reserved.
+            <span id="currentYear"></span> © <span class="font-bold text-indigo-600">UpiGateway™</span> - All rights reserved.<br>
+            <span class="text-xs">Developed by Tarik Islam | 📞 +91 9114411026 | ✉️ <a href="mailto:786tarikislam@gmail.com" class="text-indigo-600 hover:underline">786tarikislam@gmail.com</a></span>
         </div>
     </footer>
 

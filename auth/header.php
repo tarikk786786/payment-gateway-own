@@ -402,7 +402,7 @@ $logo = isset($userdata['logo']) ? $userdata['logo'] : 'https://chickenpox.in/co
             <div class="absolute hidden group-hover:block bg-white shadow-lg rounded-lg mt-2 right-0 w-48">
                 <a href="profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 animated-link"><i class="fa fa-user mr-2"></i>Profile</a>
                 <!--<a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 animated-link"><i class="fa fa-cog mr-2"></i>Settings</a>-->
-                <a href="https://web.whatsapp.com/send/?phone=919876543210&text=Hello+UpiGateway%E2%84%A2+Support%2C+I+need+help%21" target="_blank" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 animated-link"><i class="fa fa-support mr-2"></i>Support</a>
+                <a href="https://web.whatsapp.com/send/?phone=<?= htmlspecialchars($site_settings['whatsapp_number'] ?? '9114411026') ?>&text=Hello+UpiGateway%E2%84%A2+Support%2C+I+need+help%21" target="_blank" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 animated-link"><i class="fa fa-support mr-2"></i>Support</a>
                 <hr>
                 <a href="logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 animated-link"><i class="fa fa-power-off mr-2"></i>Logout</a>
             </div>
@@ -536,7 +536,7 @@ updateTime();
     <li><a href="UpiGateway_CostoTabs"><i class="sidebar-item-icon fa fa-code"></i><span class="nav-label">Mobile Intrigraion</span></a></li>
     <li><a href="training"><i class="sidebar-item-icon fa-solid fa-award"></i><span class="nav-label">Training</span></a></li>
     <li><a href="simple_code"><i class="sidebar-item-icon fa fa-download"></i><span class="nav-label">Simple Code</span></a></li>
-    <li class="btn btn-success"><a href="https://web.whatsapp.com/send/?phone=919876543210&text=Hello+UpiGateway%E2%84%A2+Support%2C+I+need+help%21&type=phone_number&app_absent=0" target="_blank"><i class="sidebar-item-icon fa fa-ticket"></i><span class="nav-label">Chat with Support</span></a></li>
+    <li class="btn btn-success"><a href="https://web.whatsapp.com/send/?phone=<?= htmlspecialchars($site_settings['whatsapp_number'] ?? '9114411026') ?>&text=Hello+UpiGateway%E2%84%A2+Support%2C+I+need+help%21&type=phone_number&app_absent=0" target="_blank"><i class="sidebar-item-icon fa fa-ticket"></i><span class="nav-label">Chat with Support</span></a></li>
 </ul>
             </div>
         </nav>
