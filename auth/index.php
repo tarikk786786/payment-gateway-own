@@ -33,7 +33,7 @@ session_start();
     </style>
 </head>
 <?php
-if (isset($_POST['submit'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
 
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = $_POST['password'];

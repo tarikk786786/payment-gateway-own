@@ -148,7 +148,7 @@ if (isset($_GET['referral_code'])) {
 }
 
 
-if (isset($_POST['create'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mobile']) && isset($_POST['email'])) {
     
     
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
