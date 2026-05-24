@@ -444,7 +444,7 @@ $news = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F]/u', '', $news);
                                 </div>
                                 <div class="admin-field">
                                     <label for="admin_news">News Content</label>
-                                    <input class="form-control" type="text" id="admin_news" name="admin_news" value="<?php echo htmlspecialchars($field_mappings['news']['value']); ?>">
+                                    <input class="form-control" type="text" id="admin_news" name="admin_news" value="<?php echo htmlspecialchars($_POST['admin_news'] ?? ''); ?>">
                                     <label>Update</label>
                                     <input class="form-check-input" type="checkbox" name="update_field[]" value="news">
                                 </div>
