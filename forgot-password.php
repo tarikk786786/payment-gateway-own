@@ -1,3 +1,107 @@
+<?php
+include "auth/config.php";
+include "auth/function.php";
+if(isset($_POST['submit'])){
+    // Sanitize input using mysqli_real_escape_string
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $pan = mysqli_real_escape_string($conn, $_POST['pan']);
+
+    $pass = rand(000000,999999);
+    $password = password_hash($pass, PASSWORD_BCRYPT);
+
+
+    $fetch = "SELECT * FROM users WHERE mobile='$username'";
+    $res = mysqli_query($conn, $fetch);
+    $row = mysqli_fetch_array($res);
+
+    if(mysqli_num_rows($res) > 0){
+        if($pan == $row['pan']){
+            $update = "UPDATE users SET password='$password' WHERE mobile='$username'";
+            $quer = mysqli_query($conn, $update);
+
+            if($quer){
+                $msg = "Dear " . $row['name'] . " Your New Password Below
+                Your Password = $pass
+                Thanks & Regards
+                UpiGateway™";
+                $encodedMsg = urlencode($msg);
+                $email = $row['email'];
+                // sendWA($username,$encodedMsg);
+                sendNotification($username, $email, $msg, "UpiGateway Password Reccovery");
+                //file_get_contents("https://wamsg.tk/wa.php?api_key=Wn62PIQ09X8BiY7iOtnEmgBCFFTDM3&sender=918145511275&number=91$username&message=$encodedMsg");
+
+                echo '
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            title: "Congratulations! Your New Password Sent to Your WhatsApp!!",
+            text: "Your new password is: ' . $pass . '. Please Click Ok Button to proceed.",
+            confirmButtonText: "Ok",
+            icon: "success"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "auth/index.php"; // Replace with your desired redirect URL
+            }
+        });
+    </script>
+';
+exit;
+            } else {
+                echo '
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    Swal.fire({
+                        title: "Opps! Something went wrong Please try again Later!!",
+                        text: "Please Click Ok Button!!",
+                        confirmButtonText: "Ok",
+                        icon: "error"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "forgot-password.php"; // Replace with your desired redirect URL
+                        }
+                    });
+                </script>
+                ';
+                exit;
+            }
+        } else {
+            echo '
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire({
+                    title: "Provided Pan Does Not Match Or Exist!!",
+                    text: "Please Click Ok Button!!",
+                    confirmButtonText: "Ok",
+                    icon: "error"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "forgot-password.php"; // Replace with your desired redirect URL
+                    }
+                });
+            </script>
+            ';
+            exit;
+        }
+    } else {
+        echo '
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                title: "Opps! Sorry Your Mobile Number Does Not Exist In Our Record!!",
+                text: "Please Click Ok Button!!",
+                confirmButtonText: "Ok",
+                icon: "error"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "forgot-password.php"; // Replace with your desired redirect URL
+                }
+            });
+        </script>
+        ';
+        exit;
+    }
+} 
+?>
 <!DOCTYPE html>
 
 <html lang="en" class="light-style layout-wide  customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="common/assets/" data-template="vertical-menu-template" data-style="light">
@@ -98,106 +202,7 @@
                     <h4 class="mb-1">Forgot Password? 🔒</h4>
                     <p class="mb-5">Enter your email and we'll send you instructions to reset your password</p>
                     
-                    <?php
-include "auth/config.php";
-include "auth/function.php";
-if(isset($_POST['submit'])){
-    // Sanitize input using mysqli_real_escape_string
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $pan = mysqli_real_escape_string($conn, $_POST['pan']);
 
-    $pass = rand(000000,999999);
-    $password = password_hash($pass, PASSWORD_BCRYPT);
-
-
-    $fetch = "SELECT * FROM users WHERE mobile='$username'";
-    $res = mysqli_query($conn, $fetch);
-    $row = mysqli_fetch_array($res);
-
-    if(mysqli_num_rows($res) > 0){
-        if($pan == $row['pan']){
-            $update = "UPDATE users SET password='$password' WHERE mobile='$username'";
-            $quer = mysqli_query($conn, $update);
-
-            if($quer){
-                $msg = "Dear " . $row['name'] . " Your New Password Below
-                Your Password = $pass
-                Thanks & Regards
-                UpiGateway™";
-                $encodedMsg = urlencode($msg);
-                $email = $row['email'];
-                // sendWA($username,$encodedMsg);
-                sendNotification($username, $email, $msg, "UpiGateway Password Reccovery");
-                //file_get_contents("https://wamsg.tk/wa.php?api_key=Wn62PIQ09X8BiY7iOtnEmgBCFFTDM3&sender=918145511275&number=91$username&message=$encodedMsg");
-
-                echo '
-    <script>
-        Swal.fire({
-            title: "Congratulations! Your New Password Sent to Your WhatsApp!!",
-            text: "Your new password is: ' . $pass . '. Please Click Ok Button to proceed.",
-            confirmButtonText: "Ok",
-            icon: "success"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = "auth/index"; // Replace with your desired redirect URL
-            }
-        });
-    </script>
-';
-exit;
-            } else {
-                echo '
-                <script>
-                    Swal.fire({
-                        title: "Opps! Something went wrong Please try again Later!!",
-                        text: "Please Click Ok Button!!",
-                        confirmButtonText: "Ok",
-                        icon: "error"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "forgot-password"; // Replace with your desired redirect URL
-                        }
-                    });
-                </script>
-                ';
-                exit;
-            }
-        } else {
-            echo '
-            <script>
-                Swal.fire({
-                    title: "Provided Pan Does Not Match Or Exist!!",
-                    text: "Please Click Ok Button!!",
-                    confirmButtonText: "Ok",
-                    icon: "error"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = "forgot-password"; // Replace with your desired redirect URL
-                    }
-                });
-            </script>
-            ';
-            exit;
-        }
-    } else {
-        echo '
-        <script>
-            Swal.fire({
-                title: "Opps! Sorry Your Mobile Number Does Not Exist In Our Record!!",
-                text: "Please Click Ok Button!!",
-                confirmButtonText: "Ok",
-                icon: "error"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "forgot-password"; // Replace with your desired redirect URL
-                }
-            });
-        </script>
-        ';
-        exit;
-    }
-} 
-?>
 
                     
                     <form class="mb-5" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
