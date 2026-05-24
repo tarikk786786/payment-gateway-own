@@ -1187,6 +1187,40 @@ ALTER TABLE `wallet_transactions`
   MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=216;
 COMMIT;
 
+-- ============================================================
+-- PERFORMANCE INDEXES - Speed up common queries
+-- ============================================================
+
+-- orders table: most frequently queried table
+ALTER TABLE `orders`
+  ADD INDEX IF NOT EXISTS `idx_orders_user_id` (`user_id`),
+  ADD INDEX IF NOT EXISTS `idx_orders_status` (`status`),
+  ADD INDEX IF NOT EXISTS `idx_orders_create_date` (`create_date`),
+  ADD INDEX IF NOT EXISTS `idx_orders_user_token` (`user_token`(64)),
+  ADD INDEX IF NOT EXISTS `idx_orders_user_status_date` (`user_id`, `status`, `create_date`);
+
+-- users table: login and token lookups
+ALTER TABLE `users`
+  ADD INDEX IF NOT EXISTS `idx_users_mobile` (`mobile`),
+  ADD INDEX IF NOT EXISTS `idx_users_user_token` (`user_token`(32)),
+  ADD INDEX IF NOT EXISTS `idx_users_expiry` (`expiry`),
+  ADD INDEX IF NOT EXISTS `idx_users_role` (`role`);
+
+-- planorders table: billing queries
+ALTER TABLE `planorders`
+  ADD INDEX IF NOT EXISTS `idx_planorders_user_id` (`user_id`),
+  ADD INDEX IF NOT EXISTS `idx_planorders_status` (`status`),
+  ADD INDEX IF NOT EXISTS `idx_planorders_payment_date` (`payment_date`);
+
+-- user_checkout_settings: per-user lookup
+ALTER TABLE `user_checkout_settings`
+  ADD INDEX IF NOT EXISTS `idx_ucs_user_id` (`user_id`);
+
+-- user_ips: IP whitelist check
+ALTER TABLE `user_ips`
+  ADD INDEX IF NOT EXISTS `idx_user_ips_user_id` (`user_id`),
+  ADD INDEX IF NOT EXISTS `idx_user_ips_ip` (`ip`(45));
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

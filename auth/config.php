@@ -56,11 +56,19 @@ if (!defined('CONFIG_INCLUDED')) {
             "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `instance_id` varchar(255) DEFAULT NULL",
             "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `instance_secret` varchar(255) DEFAULT NULL",
             "ALTER TABLE `user_checkout_settings` ADD COLUMN IF NOT EXISTS `news` text DEFAULT ''",
+            // Performance indexes - run IF NOT EXISTS to be safe on existing DBs
+            "ALTER TABLE `orders` ADD INDEX IF NOT EXISTS `idx_orders_user_id` (`user_id`)",
+            "ALTER TABLE `orders` ADD INDEX IF NOT EXISTS `idx_orders_status` (`status`)",
+            "ALTER TABLE `orders` ADD INDEX IF NOT EXISTS `idx_orders_user_token` (`user_token`(64))",
+            "ALTER TABLE `users` ADD INDEX IF NOT EXISTS `idx_users_mobile` (`mobile`)",
+            "ALTER TABLE `users` ADD INDEX IF NOT EXISTS `idx_users_user_token` (`user_token`(32))",
+            "ALTER TABLE `user_ips` ADD INDEX IF NOT EXISTS `idx_user_ips_user_id` (`user_id`)",
         ];
         foreach ($migrations as $sql) {
             @$conn->query($sql);
         }
     }
+
 
     // Fetch site settings from the database
     $query = "SELECT * FROM site_settings LIMIT 1";
