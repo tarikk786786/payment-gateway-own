@@ -25,8 +25,8 @@ if (file_exists($env_path)) {
     }
 }
 
-// error_reporting(E_ALL);
-// ini_set("display_errors", true);
+error_reporting(E_ALL);
+ini_set("display_errors", true);
 
 $db_host = getenv('DB_HOST') ?: '127.0.0.1';
 $db_user = getenv('DB_USER') ?: 'Tarik7-353033376eab';

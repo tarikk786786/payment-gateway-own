@@ -351,7 +351,7 @@ if ($result->num_rows > 0) {
         }
     });
 </script>
-<?}?>
+<?php } ?>
 
 
 <?php
@@ -406,6 +406,7 @@ echo '
     </script>
     ';
     exit;
+}
 }
 }
 }
