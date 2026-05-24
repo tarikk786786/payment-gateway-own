@@ -128,7 +128,7 @@ function sendEmail($to_email, $subject, $message) {
         $mail->Subject = $subject;
 
         // HTML Email Body with Branding
-$server = "chickenpox.in";
+$server = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "chickenpox.in";
 
 $brandingMessage = <<<HTML
 <html>

@@ -194,86 +194,165 @@ $url_referral = isset($_GET['referral_code']) ? $_GET['referral_code'] : (isset(
     <title><?php echo isset($site_settings['brand_name']) ? $site_settings['brand_name'] : 'FastGateway'; ?> | Register</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php if(isset($server)) echo "<link rel=\"icon\" href=\"https://{$server}/common/img/logoshild.png\">"; ?>
     <style>
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%);
             min-height: 100vh;
-            color: #f8fafc;
+            color: #1e293b;
             overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
         }
+        
+        /* Floating background shapes */
+        .bg-shape {
+            position: absolute;
+            filter: blur(60px);
+            z-index: -1;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+        .shape-1 {
+            width: 400px; height: 400px;
+            background: rgba(167, 139, 250, 0.4);
+            top: -100px; left: -100px;
+            border-radius: 50%;
+        }
+        .shape-2 {
+            width: 500px; height: 500px;
+            background: rgba(96, 165, 250, 0.3);
+            bottom: -150px; right: -100px;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-30px) scale(1.1); }
+        }
+
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 50px -12px rgba(100, 116, 139, 0.25);
+        }
+
+        /* Input animations */
+        .input-wrapper {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .input-wrapper:focus-within {
+            transform: translateY(-2px);
+        }
+        
+        .floating-input {
+            background: rgba(241, 245, 249, 0.7);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            color: #334155;
+        }
+        .floating-input:focus {
+            background: #ffffff;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
         }
         .floating-input:focus ~ .floating-label,
         .floating-input:not(:placeholder-shown) ~ .floating-label {
             transform: translateY(-1.5rem) scale(0.85);
-            color: #38bdf8;
+            color: #8b5cf6;
+            font-weight: 600;
         }
+        .floating-label {
+            color: #64748b;
+        }
+
         /* Hide scrollbar */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transition: all 0.4s ease;
+            background-size: 200% auto;
+        }
+        .btn-gradient:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.6);
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen p-4 relative">
 
-    <div class="glass-panel w-full max-w-5xl rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl">
+    <!-- Animated Background Shapes -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+
+    <div class="glass-panel w-full max-w-5xl rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl animate__animated animate__zoomIn animate__faster">
         <!-- Left Banner -->
-        <div class="hidden md:flex md:w-5/12 bg-gradient-to-br from-indigo-600 to-blue-900 p-12 flex-col justify-between relative overflow-hidden">
-            <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl"></div>
-            <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+        <div class="hidden md:flex md:w-5/12 bg-gradient-to-br from-indigo-600 to-purple-700 p-12 flex-col justify-between relative overflow-hidden text-white">
+            <div class="absolute top-0 right-0 -mt-20 -mr-20 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-purple-400 opacity-20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
             
-            <div class="z-10">
-                <h1 class="text-4xl font-extrabold text-white mb-4">Join the Future<br><span class="text-blue-300">of Payments.</span></h1>
-                <p class="text-blue-100 text-lg leading-relaxed">Set up your account in minutes and start accepting payments instantly with our enterprise-grade infrastructure.</p>
+            <div class="z-10 animate__animated animate__fadeInLeft animate__delay-1s">
+                <h1 class="text-4xl font-extrabold mb-4 leading-tight">Join the Future<br><span class="text-purple-200">of Payments.</span></h1>
+                <p class="text-indigo-100 text-lg leading-relaxed">Set up your account in minutes and start accepting payments instantly with our beautiful, enterprise-grade infrastructure.</p>
             </div>
             
-            <div class="z-10 space-y-4">
-                <div class="flex items-center text-blue-100"><i class="fas fa-rocket w-6 text-xl"></i> <span>Quick Onboarding</span></div>
-                <div class="flex items-center text-blue-100"><i class="fas fa-shield-alt w-6 text-xl"></i> <span>Bank-Grade 256-bit Security</span></div>
-                <div class="flex items-center text-blue-100"><i class="fas fa-bolt w-6 text-xl"></i> <span>Instant Settlements 24/7</span></div>
+            <div class="z-10 space-y-6 animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="flex items-center text-indigo-100 hover:text-white transition-colors transform hover:translate-x-2 duration-300">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl mr-4"><i class="fas fa-rocket text-xl"></i></div>
+                    <span class="font-medium">Quick Onboarding</span>
+                </div>
+                <div class="flex items-center text-indigo-100 hover:text-white transition-colors transform hover:translate-x-2 duration-300">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl mr-4"><i class="fas fa-shield-alt text-xl"></i></div>
+                    <span class="font-medium">Bank-Grade Security</span>
+                </div>
+                <div class="flex items-center text-indigo-100 hover:text-white transition-colors transform hover:translate-x-2 duration-300">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl mr-4"><i class="fas fa-bolt text-xl"></i></div>
+                    <span class="font-medium">Instant Settlements 24/7</span>
+                </div>
             </div>
         </div>
 
         <!-- Register Form -->
-        <div class="w-full md:w-7/12 p-8 md:p-12 max-h-[90vh] overflow-y-auto no-scrollbar relative">
-            <div class="mb-8 text-center md:text-left">
+        <div class="w-full md:w-7/12 p-8 md:p-12 max-h-[90vh] overflow-y-auto no-scrollbar relative z-10 bg-white bg-opacity-90">
+            <div class="mb-8 text-center md:text-left animate__animated animate__fadeInDown">
                 <?php if(!empty($site_settings['logo_url']) && $site_settings['logo_url'] !== 'default_logo.png'): ?>
-                    <img src="<?php echo htmlspecialchars($site_settings['logo_url']); ?>" alt="Logo" class="h-12 mb-4 mx-auto md:mx-0">
+                    <img src="<?php echo htmlspecialchars($site_settings['logo_url']); ?>" alt="Logo" class="h-14 mb-6 mx-auto md:mx-0 drop-shadow-md transition-transform hover:scale-105 duration-300">
                 <?php else: ?>
-                    <div class="inline-block bg-blue-600 p-3 rounded-xl mb-4 text-white">
-                        <i class="fas fa-user-plus text-2xl"></i>
+                    <div class="inline-block bg-gradient-to-br from-blue-500 to-indigo-600 p-4 rounded-2xl mb-6 text-white shadow-lg transition-transform hover:scale-105 duration-300">
+                        <i class="fas fa-user-plus text-3xl"></i>
                     </div>
                 <?php endif; ?>
-                <h2 class="text-3xl font-bold text-white mb-2">Register <?php echo isset($site_settings['brand_name']) ? $site_settings['brand_name'] : ''; ?> 🚀</h2>
-                <p class="text-gray-400">Start Your Journey To Advanced Payments!</p>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Register <?php echo isset($site_settings['brand_name']) ? $site_settings['brand_name'] : ''; ?> 🚀</h2>
+                <p class="text-gray-500">Start Your Journey To Advanced Payments!</p>
             </div>
 
             <form id="formAuthentication" action="" method="POST" class="space-y-6" onsubmit="return validateForm()">
-                <div class="relative">
-                    <input type="text" id="username" name="name" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required>
+                <div class="relative input-wrapper animate__animated animate__fadeInUp animate__delay-1s">
+                    <input type="text" id="username" name="name" class="floating-input w-full rounded-xl px-4 py-3 outline-none peer" placeholder=" " pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required>
                     <label for="username" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Full Name</label>
                     <div id="name-warning" class="text-red-400 text-xs mt-1 absolute"></div>
                 </div>
 
-                <div class="relative mt-8">
-                    <input type="text" id="Number" name="mobile" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10); validateMobile();" required>
+                <div class="relative mt-8 input-wrapper animate__animated animate__fadeInUp animate__delay-1s" style="animation-delay: 0.2s;">
+                    <input type="text" id="Number" name="mobile" class="floating-input w-full rounded-xl px-4 py-3 outline-none peer" placeholder=" " maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10); validateMobile();" required>
                     <label for="Number" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Mobile Number</label>
                     <div id="mobile-warning" class="text-red-400 text-xs mt-1 absolute"></div>
                 </div>
 
-                <div class="relative mt-8">
-                    <input type="email" id="email" name="email" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" onkeyup="validateEmail()" required>
+                <div class="relative mt-8 input-wrapper animate__animated animate__fadeInUp animate__delay-1s" style="animation-delay: 0.3s;">
+                    <input type="email" id="email" name="email" class="floating-input w-full rounded-xl px-4 py-3 outline-none peer" placeholder=" " pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$" onkeyup="validateEmail()" required>
                     <label for="email" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Email Address</label>
                     <div id="email-warning" class="text-red-400 text-xs mt-1 absolute"></div>
                 </div>
 
-                <div class="relative mt-8">
-                    <input type="password" id="password" name="password" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " onkeyup="checkPasswordStrength()" required>
+                <div class="relative mt-8 input-wrapper animate__animated animate__fadeInUp animate__delay-1s" style="animation-delay: 0.4s;">
+                    <input type="password" id="password" name="password" class="floating-input w-full rounded-xl px-4 py-3 outline-none peer" placeholder=" " onkeyup="checkPasswordStrength()" required>
                     <label for="password" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Password</label>
                     <button type="button" id="togglePassword" class="absolute right-4 top-3 text-gray-400 hover:text-white transition-colors">
                         <i class="fas fa-eye-slash"></i>
@@ -281,33 +360,33 @@ $url_referral = isset($_GET['referral_code']) ? $_GET['referral_code'] : (isset(
                     <div id="password-strength" class="text-xs mt-1 font-semibold absolute"></div>
                 </div>
 
-                <div class="mt-8">
-                    <label class="flex items-center text-gray-300 cursor-pointer hover:text-white transition-colors">
-                        <input type="checkbox" id="use_referral" name="use_referral" class="mr-2 rounded border-gray-600 text-blue-600 focus:ring-blue-500 bg-gray-800 h-4 w-4" onchange="toggleReferralInput(this)">
-                        <span>I have a referral code</span>
+                <div class="mt-8 animate__animated animate__fadeInUp animate__delay-1s" style="animation-delay: 0.5s;">
+                    <label class="flex items-center text-gray-600 cursor-pointer hover:text-indigo-600 transition-colors group">
+                        <input type="checkbox" id="use_referral" name="use_referral" class="mr-3 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-5 w-5 transition-transform group-hover:scale-110" onchange="toggleReferralInput(this)">
+                        <span class="font-medium">I have a referral code</span>
                     </label>
                 </div>
 
-                <div id="referralCodeContainer" class="relative mt-4" style="display: none;">
-                    <input type="text" id="referral_code" name="referral_code" class="floating-input w-full bg-gray-800 bg-opacity-50 text-white border border-gray-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition-colors peer" placeholder=" " value="<?php echo htmlspecialchars($url_referral); ?>">
+                <div id="referralCodeContainer" class="relative mt-4 input-wrapper animate__animated animate__fadeIn" style="display: none;">
+                    <input type="text" id="referral_code" name="referral_code" class="floating-input w-full rounded-xl px-4 py-3 outline-none peer" placeholder=" " value="<?php echo htmlspecialchars($url_referral); ?>">
                     <label for="referral_code" class="floating-label absolute left-4 top-3 text-gray-400 transition-all pointer-events-none">Referral Code</label>
                 </div>
 
-                <div class="mt-6 flex items-center">
-                    <label class="flex items-center text-gray-400 cursor-pointer hover:text-white transition-colors text-sm">
-                        <input type="checkbox" required class="mr-2 rounded border-gray-600 text-blue-600 focus:ring-blue-500 bg-gray-800 h-4 w-4">
-                        <span>I agree to the <a href="#" class="text-blue-400 hover:text-blue-300 underline">Terms and Privacy Policy</a></span>
+                <div class="mt-6 flex items-center animate__animated animate__fadeInUp animate__delay-1s" style="animation-delay: 0.6s;">
+                    <label class="flex items-center text-gray-500 cursor-pointer hover:text-gray-700 transition-colors text-sm">
+                        <input type="checkbox" required class="mr-3 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                        <span>I agree to the <a href="#" class="text-indigo-500 hover:text-indigo-600 font-medium underline">Terms and Privacy Policy</a></span>
                     </label>
                 </div>
 
-                <button type="submit" name="create" id="registerBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 mt-6">
-                    Create Account
+                <button type="submit" name="create" id="registerBtn" class="w-full btn-gradient text-white font-bold py-4 px-4 rounded-xl shadow-lg transition-all mt-8 animate__animated animate__fadeInUp animate__delay-1s" style="animation-delay: 0.7s;">
+                    Create Account <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </form>
 
-            <div class="mt-8 text-center border-t border-gray-700 pt-6">
-                <p class="text-gray-400">
-                    Already have an account? <a href="auth/index.php" class="text-blue-400 hover:text-blue-300 font-bold transition-colors">Sign in</a>
+            <div class="mt-10 text-center pt-6 animate__animated animate__fadeInUp animate__delay-1s" style="animation-delay: 0.8s;">
+                <p class="text-gray-500 font-medium">
+                    Already have an account? <a href="auth/index.php" class="text-indigo-600 hover:text-indigo-700 font-bold transition-colors ml-1">Sign in here</a>
                 </p>
             </div>
         </div>
