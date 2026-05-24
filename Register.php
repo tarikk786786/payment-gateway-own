@@ -401,8 +401,8 @@ echo '
 } else {
 echo '
     <script>
-        alert("Registration Failed! Please try again.");
-        window.location.href = "auth/register"; // Optionally redirect back to registration page
+        alert("Registration Failed! Error: ' . addslashes(mysqli_error($conn)) . '");
+        window.location.href = "Register"; 
     </script>
     ';
     exit;
@@ -439,7 +439,7 @@ echo '
                 <h2 style="font-size: 1.75rem;">Register <?php echo $site_settings['brand_name']; ?> 🚀</h2>
                 <p style="margin-bottom: 2rem;">Start Your Journey To Advanced Payments!</p>
                 <div id="toast-container" class="toast-container"></div>
-                <form class="mb-5" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" onsubmit="return validateForm()">
+                <form class="mb-5" method="POST" action="" onsubmit="return validateForm()">
                     <div class="form-floating form-floating-outline mb-5">
                         <input type="text" class="form-control" id="username" name="name" placeholder="Enter your Name" 
                                pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required autofocus onkeyup="validateName()">
@@ -681,10 +681,10 @@ function validateForm() {
 
     // Check for warning messages
     const warnings = [
-        document.getElementById('name-warning') ? document.getElementById('name-warning').textContent : '',
-        document.getElementById('mobile-warning') ? document.getElementById('mobile-warning').textContent : '',
-        document.getElementById('email-warning') ? document.getElementById('email-warning').textContent : '',
-        document.getElementById('referral-warning') ? document.getElementById('referral-warning').textContent : ''
+        document.getElementById('name-warning') ? document.getElementById('name-warning').textContent.trim() : '',
+        document.getElementById('mobile-warning') ? document.getElementById('mobile-warning').textContent.trim() : '',
+        document.getElementById('email-warning') ? document.getElementById('email-warning').textContent.trim() : '',
+        document.getElementById('referral-warning') ? document.getElementById('referral-warning').textContent.trim() : ''
     ];
 
     if (warnings.some(warning => warning !== '')) {
