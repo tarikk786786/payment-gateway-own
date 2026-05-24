@@ -8,12 +8,5 @@ $db_name = getenv('DB_NAME') ?: 'Tarik7-353033376eab';
 
 echo "Attempting to connect to \$db_host with user \$db_user...<br>";
 
-mysqli_report(MYSQLI_REPORT_STRICT | MYSQLI_REPORT_ALL);
-
-try {
-    $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
-    echo "Connected successfully!";
-} catch (Exception $e) {
-    echo "Connection failed: " . $e->getMessage();
-}
+echo password_hash('Tarik@786', PASSWORD_BCRYPT);
 ?>
