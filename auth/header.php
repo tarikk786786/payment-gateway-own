@@ -61,7 +61,7 @@ $logo = isset($userdata['logo']) ? $userdata['logo'] : 'https://chickenpox.in/co
 
 <head>
     <meta charset="UTF-8">
-    <meta name="csrf-token" content="<?= $_SESSION['csrf_token']; ?>">
+    <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? ''; ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width initial-scale=1.0">
     <title><?php echo $site_settings['brand_name'] ?? ''; ?> <?php echo $pageTitle ?? ''; ?></title>
