@@ -16,9 +16,9 @@ if (!isset($_POST['order_id'])) {
     echo json_encode(["status" => "error", "message" => "Invalid Order ID"]);
     exit;
 }
-$order_id = $_POST['order_id'];
-$user_token = $_POST['user_token'];
-$byteTransactionId = $_POST['byteTransactionId'];
+$order_id = isset($_POST['order_id']) ? mysqli_real_escape_string($conn, $_POST['order_id']) : '';
+$user_token = isset($_POST['user_token']) ? mysqli_real_escape_string($conn, $_POST['user_token']) : '';
+$byteTransactionId = isset($_POST['byteTransactionId']) ? mysqli_real_escape_string($conn, $_POST['byteTransactionId']) : '';
 // echo("user_token=".$user_token);
 
 if (!$byteTransactionId && $order_id) {

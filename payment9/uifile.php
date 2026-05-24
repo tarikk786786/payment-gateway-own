@@ -31,9 +31,9 @@ if (empty($token)) {
 $token_safe = mysqli_real_escape_string($conn, $token);
 
 if (isset($_GET['order_id']) && isset($_GET['status']) && isset($_GET['user_id'])) {
-    $order_id = $_GET['order_id'];
-    $status = $_GET['status'];
-    $user_id = $_GET['user_id'];
+    $order_id = mysqli_real_escape_string($conn, $_GET['order_id']);
+    $status = mysqli_real_escape_string($conn, $_GET['status']);
+    $user_id = mysqli_real_escape_string($conn, $_GET['user_id']);
     // Example: Update only if status is FAILURE
     if (isset($status)) {
         $update = db_update($conn, "orders", array("status" => "$status"), "order_id='$order_id' AND user_id='$user_id'");

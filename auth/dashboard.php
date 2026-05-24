@@ -45,14 +45,15 @@
 
     calculatePaymentStats($successPercentage, $pendingPercentage, $failedPercentage, $totalPayments, $successPayments, $pendingPayments, $failedPayments);
 
-    $expiryDate = $userdata['expiry'];
+    $expiryDate = !empty($userdata['expiry']) ? $userdata['expiry'] : date('Y-m-d');
     $today = date('Y-m-d');
     $expiryTimestamp = strtotime($expiryDate);
     $todayTimestamp = strtotime($today);
     $daysExpired = floor(($todayTimestamp - $expiryTimestamp) / (60 * 60 * 24));
 
     $limitUsed = isset($userdata['tranjection_Count']) ? $userdata['tranjection_Count'] : 0;
-    $hitlimit_result = db_select($conn, "subscription_plan", "hitLimit", "id=".$userdata['planId']);
+    $planId = !empty($userdata['planId']) ? (int)$userdata['planId'] : 0;
+    $hitlimit_result = db_select($conn, "subscription_plan", "hitLimit", "id=".$planId);
     if ($hitlimit_result && $hitlimit_result->num_rows > 0) {
         $row = $hitlimit_result->fetch_assoc();
         $hitlimit = $row['hitLimit'];
