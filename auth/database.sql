@@ -634,6 +634,7 @@ CREATE TABLE `users` (
   `user_token` varchar(255) NOT NULL,
   `expiry` date NOT NULL,
   `vip_expiry` date NOT NULL DEFAULT '2025-01-01',
+  `kycstatus` enum('Verified','Pending','Rejected') NOT NULL DEFAULT 'Pending',
   `tranjection_Count` int(6) NOT NULL DEFAULT 0,
   `planId` int(11) DEFAULT NULL,
   `callback_url` longtext NOT NULL,

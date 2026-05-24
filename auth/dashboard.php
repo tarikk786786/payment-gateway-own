@@ -10,6 +10,21 @@
     $monthlybilling = $conn->query("SELECT SUM(`amount`) as amt FROM `planorders` WHERE `status` = 'SUCCESS' AND MONTH(`payment_date`) = MONTH(CURDATE()) AND YEAR(`payment_date`) = YEAR(CURDATE())")->fetch_assoc();
     $users = $conn->query("SELECT COUNT(*) as total_users, SUM(CASE WHEN expiry < CURRENT_DATE THEN 1 ELSE 0 END) as expired_users, SUM(CASE WHEN expiry >= CURRENT_DATE THEN 1 ELSE 0 END) as active_users, SUM(CASE WHEN login_token IS NOT NULL THEN 1 ELSE 0 END) as inline_users FROM users")->fetch_assoc();
 
+    // Fix null warnings for PHP 8.2+
+    $todayallpayment['amt'] = (float)($todayallpayment['amt'] ?? 0);
+    $todayallpaymentadmin['amt'] = (float)($todayallpaymentadmin['amt'] ?? 0);
+    $todaysuccesspayment['amt'] = (float)($todaysuccesspayment['amt'] ?? 0);
+    $todaysuccesspaymentadmin['amt'] = (float)($todaysuccesspaymentadmin['amt'] ?? 0);
+    $todaypendingpayment['amt'] = (float)($todaypendingpayment['amt'] ?? 0);
+    $todaypendingpaymentadmin['amt'] = (float)($todaypendingpaymentadmin['amt'] ?? 0);
+    $todayfail['amt'] = (float)($todayfail['amt'] ?? 0);
+    $todaysettlement['amt'] = (float)($todaysettlement['amt'] ?? 0);
+    $monthlybilling['amt'] = (float)($monthlybilling['amt'] ?? 0);
+    $users['total_users'] = (int)($users['total_users'] ?? 0);
+    $users['expired_users'] = (int)($users['expired_users'] ?? 0);
+    $users['active_users'] = (int)($users['active_users'] ?? 0);
+    $users['inline_users'] = (int)($users['inline_users'] ?? 0);
+
     function convertUrlsToLinks($text) {
         $pattern = '/(https?:\/\/[^\s]+)/';
         $replacement = '<a href="$1" target="_blank" class="text-blue-500 hover:text-blue-700 underline transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded">$1</a>';
@@ -775,7 +790,7 @@ echo "<script>var methodChartData = " . json_encode($methodData) . "; window.met
         <?php
         $expiryDate = $userdata['expiry'];
         $vip_expiry = $userdata['vip_expiry'];
-        $kycstatus = $userdata['kycstatus'];
+        $kycstatus = isset($userdata['kycstatus']) ? $userdata['kycstatus'] : 'Pending';
         $today = date('Y-m-d');
         $status = "Expired";
         $vipplan = "NO";
