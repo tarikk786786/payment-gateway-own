@@ -1,6 +1,5 @@
 <?php
-include "header.php"; // Include your header file
-include "database_connection.php"; // Ensure this is the correct path to your DB connection file
+include "header.php"; // Include your header file (provides $conn, $userdata, etc.)
 
 // Initialize variables
 $whatsapp_api_url = '';

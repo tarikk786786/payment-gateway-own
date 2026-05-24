@@ -41,9 +41,25 @@ if (!defined('CONFIG_INCLUDED')) {
     $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
     $server = $_SERVER["SERVER_NAME"];
 
-    // Auto-migrate missing kycstatus column to prevent fatal errors
+    // Auto-migrate missing columns to prevent fatal errors on fresh deployments
     if ($conn && !$conn->connect_error) {
-        $conn->query("ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `kycstatus` enum('Verified','Pending','Rejected') NOT NULL DEFAULT 'Pending'");
+        $migrations = [
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `kycstatus` enum('Verified','Pending','Rejected') NOT NULL DEFAULT 'Pending'",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `login_token` varchar(255) DEFAULT NULL",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `create_date` datetime DEFAULT current_timestamp()",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `referred_by` int(11) DEFAULT NULL",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `Intent_unable` tinyint(1) DEFAULT 1",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `merchantRouting` tinyint(1) DEFAULT 0",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `telegram_subscribed` varchar(3) DEFAULT 'off'",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `telegram_chat_id` varchar(25) DEFAULT NULL",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `telegram_username` varchar(25) DEFAULT NULL",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `instance_id` varchar(255) DEFAULT NULL",
+            "ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `instance_secret` varchar(255) DEFAULT NULL",
+            "ALTER TABLE `user_checkout_settings` ADD COLUMN IF NOT EXISTS `news` text DEFAULT ''",
+        ];
+        foreach ($migrations as $sql) {
+            @$conn->query($sql);
+        }
     }
 
     // Fetch site settings from the database
@@ -58,7 +74,7 @@ if (!defined('CONFIG_INCLUDED')) {
             'brand_name' => 'Default Brand Name',
             'logo_url' => 'default_logo.png',
             'site_link' => 'https://chickenpox.in/',
-            'whatsapp_number' => '9219565158',
+            'whatsapp_number' => '9114411026',
             'copyright_text' => '© Default Copyright'
         ];
     }

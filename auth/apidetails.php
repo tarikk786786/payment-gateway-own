@@ -92,18 +92,17 @@ if(isset($_POST['get_api_token'])){
         
         
         // Show SweetAlert2 success message
-                            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18"></script>';
-echo '<script>
+        echo '<script>
     Swal.fire({
         icon: "success",
         title: "New API Key generated!!",
-        showConfirmButton: true, // Show the confirm button
-        confirmButtonText: "Ok!", // Set text for the confirm button
-        allowOutsideClick: false, // Prevent the user from closing the popup by clicking outside
-        allowEscapeKey: false // Prevent the user from closing the popup by pressing Escape key
+        showConfirmButton: true,
+        confirmButtonText: "Ok!",
+        allowOutsideClick: false,
+        allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "developers"; // Redirect to "dashboard" when the user clicks the confirm button
+            window.location.href = "developers";
         }
     });
 </script>';
@@ -116,18 +115,17 @@ echo '<script>
         
         
           // Show SweetAlert2 error message
-                            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18"></script>';
-echo '<script>
+        echo '<script>
     Swal.fire({
         icon: "error",
         title: "API Key Generating Failed!!",
-        showConfirmButton: true, // Show the confirm button
-        confirmButtonText: "Ok!", // Set text for the confirm button
-        allowOutsideClick: false, // Prevent the user from closing the popup by clicking outside
-        allowEscapeKey: false // Prevent the user from closing the popup by pressing Escape key
+        showConfirmButton: true,
+        confirmButtonText: "Ok!",
+        allowOutsideClick: false,
+        allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "developers"; // Redirect to "dashboard" when the user clicks the confirm button
+            window.location.href = "developers";
         }
     });
 </script>';
@@ -177,27 +175,24 @@ echo '<script>
     // Assuming $mobile is already defined in header.php
     $sanitizedMobile = mysqli_real_escape_string($conn, $mobile);
 
-
-    $key = md5($uniqueNumber);
-    $keyquery = "UPDATE `users` SET  callback_url='$bytecallbackurl' WHERE mobile = '$sanitizedMobile'";
+    $keyquery = "UPDATE `users` SET callback_url='$bytecallbackurl' WHERE mobile = '$sanitizedMobile'";
     $queryres = mysqli_query($conn, $keyquery);
     if($queryres){
         
         
         
         // Show SweetAlert2 success message
-                            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18"></script>';
-echo '<script>
+        echo '<script>
     Swal.fire({
         icon: "success",
         title: "Webhook Updated Successfully",
-        showConfirmButton: true, // Show the confirm button
-        confirmButtonText: "Ok!", // Set text for the confirm button
-        allowOutsideClick: false, // Prevent the user from closing the popup by clicking outside
-        allowEscapeKey: false // Prevent the user from closing the popup by pressing Escape key
+        showConfirmButton: true,
+        confirmButtonText: "Ok!",
+        allowOutsideClick: false,
+        allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "apidetails"; // Redirect to "dashboard" when the user clicks the confirm button
+            window.location.href = "apidetails";
         }
     });
 </script>';
@@ -210,18 +205,17 @@ echo '<script>
         
         
           // Show SweetAlert2 error message
-                            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18"></script>';
-echo '<script>
+        echo '<script>
     Swal.fire({
         icon: "error",
         title: "Error Updating Webhook Try again Later!!",
-        showConfirmButton: true, // Show the confirm button
-        confirmButtonText: "Ok!", // Set text for the confirm button
-        allowOutsideClick: false, // Prevent the user from closing the popup by clicking outside
-        allowEscapeKey: false // Prevent the user from closing the popup by pressing Escape key
+        showConfirmButton: true,
+        confirmButtonText: "Ok!",
+        allowOutsideClick: false,
+        allowEscapeKey: false
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = "developers"; // Redirect to "dashboard" when the user clicks the confirm button
+            window.location.href = "developers";
         }
     });
 </script>';
