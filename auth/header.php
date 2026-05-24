@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 include "config.php";
@@ -545,8 +544,8 @@ updateTime();
         <?php include "footer.php";?>
         <?php
 } else {
-   mysqli_query($conn, "UPDATE users SET login_token=NULL WHERE id='$user_id'");
-   header("location:index");
+   header("location:index.php");
+   exit;
 }
 ?>
     
