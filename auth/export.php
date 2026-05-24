@@ -1,6 +1,6 @@
 <?php
 require 'config.php'; // Database connection
-require 'vendor/autoload.php'; // Ensure you have PhpSpreadsheet and mPDF libraries
+require __DIR__ . '/../vendor/autoload.php'; // Ensure you have PhpSpreadsheet and mPDF libraries
 session_start();
 
 // Fetch data for export

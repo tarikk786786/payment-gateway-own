@@ -106,7 +106,7 @@ function sendWA($mobile_no, $msg) {
 
 
 function sendEmail($to_email, $subject, $message) {
-    require_once __DIR__ . '/vendor/autoload.php'; // Composer autoload
+    require_once __DIR__ . '/../vendor/autoload.php'; // Composer autoload
 
     $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
 

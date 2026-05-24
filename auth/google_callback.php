@@ -1,5 +1,5 @@
 <?php
-require_once 'vendor/autoload.php'; // Include the Google API Client Library
+require_once __DIR__ . '/../vendor/autoload.php'; // Include the Google API Client Library
 
 session_start();
 
